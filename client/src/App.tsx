@@ -124,7 +124,7 @@ function App() {
         <div className={`fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 transition-opacity duration-300 ${habits && habits.length > 0 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
           <Button
             onClick={() => setIsAddHabitModalOpen(true)}
-            className="gap-2 rounded-full bg-purple-500 hover:bg-purple-600 text-white shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 px-6 py-3"
+            className="gap-2 rounded-full bg-purple-600 hover:bg-purple-700 text-white shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 px-6 py-3"
           >
             <PlusIcon className="h-4 w-4" />
             Add Habit
@@ -241,7 +241,7 @@ function App() {
                       Start by adding your first habit to track
                     </p>
                     <Button
-                      className="mt-6 gap-2 rounded-full bg-purple-500 hover:bg-purple-600 text-white shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 px-6"
+                      className="mt-6 gap-2 rounded-full bg-purple-600 hover:bg-purple-700 text-white shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 px-6"
                       onClick={() => setIsAddHabitModalOpen(true)}
                     >
                       <PlusIcon className="h-4 w-4" />
