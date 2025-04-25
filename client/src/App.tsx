@@ -154,7 +154,7 @@ function App() {
                         transition={{ duration: 0.2 }}
                         layout
                       >
-                        <div className="bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-700 transition-all hover:shadow-md">
+                        <div className="bg-gray-800 rounded-xl p-5 shadow border border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/10 hover:border-gray-600">
                           <div className="flex justify-between items-center">
                             <div>
                               <h3 className="font-bold text-lg text-white group-hover:text-primary">{habit.name}</h3>
@@ -178,9 +178,9 @@ function App() {
                               <span className="text-xs text-gray-400">Weekly progress</span>
                               <span className="text-xs font-medium text-gray-300">{getHabitWeeklyProgress(habit.id) || 0}%</span>
                             </div>
-                            <div className="w-full h-1.5 bg-gray-800/60 rounded-full overflow-hidden border border-gray-700 shadow-inner">
+                            <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden shadow">
                               <div 
-                                className="h-1.5 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full transition-all duration-500 ease-out shadow-sm min-w-[4px]"
+                                className="h-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full transition-all duration-500 ease-out shadow min-w-[4px]"
                                 style={{ width: `${Math.max(getHabitWeeklyProgress(habit.id) || 0, 1)}%` }}
                               />
                             </div>
@@ -215,11 +215,11 @@ function App() {
                       </motion.div>
                     ))}
                     
-                    {/* Add Habit Button below existing habits */}
-                    <div className="flex justify-center mt-6">
+                    {/* Add Habit Button below existing habits - centered */}
+                    <div className="flex justify-center mt-10 mb-6">
                       <Button
                         onClick={() => setIsAddHabitModalOpen(true)}
-                        className="gap-2 rounded-full bg-purple-500 hover:bg-purple-600 text-white"
+                        className="gap-2 rounded-full bg-purple-500 hover:bg-purple-600 text-white shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 px-6"
                       >
                         <PlusIcon className="h-4 w-4" />
                         Add Habit
@@ -240,7 +240,7 @@ function App() {
                       Start by adding your first habit to track
                     </p>
                     <Button
-                      className="mt-6 gap-2 rounded-full bg-purple-500 hover:bg-purple-600 text-white"
+                      className="mt-6 gap-2 rounded-full bg-purple-500 hover:bg-purple-600 text-white shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 px-6"
                       onClick={() => setIsAddHabitModalOpen(true)}
                     >
                       <PlusIcon className="h-4 w-4" />
