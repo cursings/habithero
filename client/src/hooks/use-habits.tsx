@@ -10,14 +10,15 @@ export function useHabits() {
   const { toast } = useToast();
   const [isAddHabitModalOpen, setIsAddHabitModalOpen] = useState(false);
 
+  // Use a faster refetch interval and disable stale time to make updates more immediate
   const { data: habits = [], isLoading: isLoadingHabits } = useQuery<Habit[]>({
     queryKey: ["/api/habits"],
-    staleTime: 0, // Always treat data as stale
-    refetchInterval: 5000, // Refetch every 5 seconds
+    staleTime: 0,
+    refetchInterval: 0, // No automatic refetching
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
-    networkMode: 'always' // Always attempt network requests
+    networkMode: 'always',
   });
 
   // Log habits whenever they change
@@ -28,16 +29,33 @@ export function useHabits() {
   const { data: completions = [], isLoading: isLoadingCompletions } = useQuery<HabitCompletion[]>({
     queryKey: ["/api/completions"],
     staleTime: 0,
-    refetchInterval: 5000,
+    refetchInterval: 0, // No automatic refetching
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
-    networkMode: 'always'
+    networkMode: 'always',
   });
 
   const addHabitMutation = useMutation({
     mutationFn: async (habit: InsertHabit) => {
       console.log("Adding habit:", habit);
+      
+      // Create an optimistic Habit for immediate UI update
+      // Using type assertion to override type checking since we just need it for UI
+      const optimisticHabit = {
+        id: Date.now(), // Temporary ID
+        name: habit.name,
+        frequency: habit.frequency,
+        reminderTime: habit.reminderTime || null,
+        createdAt: new Date().toISOString()
+      } as unknown as Habit;
+      
+      // Immediately update the habits list
+      queryClient.setQueryData<Habit[]>(["/api/habits"], (oldData = []) => {
+        return [...oldData, optimisticHabit];
+      });
+      
+      // Make the actual API call
       const response = await apiRequest("POST", "/api/habits", habit);
       const newHabit = await response.json();
       return newHabit as Habit;
@@ -45,33 +63,24 @@ export function useHabits() {
     onSuccess: async (newHabit) => {
       console.log("Habit added successfully:", newHabit);
       
-      // Immediately update the cache with the new habit
+      // Update the habits list with the real habit (replacing our optimistic one)
       queryClient.setQueryData<Habit[]>(["/api/habits"], (oldData = []) => {
-        return [...oldData, newHabit];
+        // Remove our temporary habit and add the real one
+        const filteredData = oldData.filter(h => typeof h.id !== 'number' || h.id < 9000000000);
+        return [...filteredData, newHabit];
       });
       
-      // Force immediate refetch of all data
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["/api/habits"] }),
-        queryClient.invalidateQueries({ queryKey: ["/api/completions"] }),
-        queryClient.invalidateQueries({ queryKey: ["/api/stats"] })
-      ]);
-      
-      // Ensure immediate refresh of data
-      await Promise.all([
-        queryClient.refetchQueries({ queryKey: ["/api/habits"] }),
-        queryClient.refetchQueries({ queryKey: ["/api/stats"] }),
-        queryClient.refetchQueries({ queryKey: ["/api/completions"] })
-      ]);
-      
-      toast({
-        title: "Success",
-        description: "Habit added successfully",
-      });
+      // Silently update in the background
+      queryClient.invalidateQueries({ queryKey: ["/api/habits"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
       
       setIsAddHabitModalOpen(false);
     },
     onError: (error) => {
+      // Revert optimistic update
+      queryClient.invalidateQueries({ queryKey: ["/api/habits"] });
+      queryClient.refetchQueries({ queryKey: ["/api/habits"] });
+      
       toast({
         title: "Error",
         description: `Failed to add habit: ${error.message}`,
@@ -82,6 +91,46 @@ export function useHabits() {
 
   const toggleCompletionMutation = useMutation({
     mutationFn: async (data: { habitId: number; date: string; completed: boolean }) => {
+      // Before making any API calls, update the local state optimistically
+      const today = format(new Date(), "yyyy-MM-dd");
+      
+      // Optimistically update completions
+      queryClient.setQueryData<HabitCompletion[]>(["/api/completions"], (oldCompletions = []) => {
+        if (!data.completed) {
+          // If unmarking, remove the completion from the cache
+          return oldCompletions.filter(
+            c => !(c.habitId === data.habitId && c.date === today)
+          );
+        } else {
+          // If marking as completed, add a new completion to the cache
+          const newCompletion = {
+            id: Date.now(), // Temporary ID
+            habitId: data.habitId,
+            date: today,
+            createdAt: new Date()
+          };
+          return [...oldCompletions, newCompletion as unknown as HabitCompletion];
+        }
+      });
+      
+      // Also update stats optimistically
+      queryClient.setQueryData<HabitStats>(["/api/stats"], (oldStats = {
+        completionRate: 0,
+        completionRateChange: 0,
+        currentStreak: 0,
+        longestStreak: 0,
+        totalCompletions: 0,
+        totalCompletionsChange: 0
+      }) => {
+        const delta = data.completed ? 1 : -1;
+        return {
+          ...oldStats,
+          completionRate: Math.max(0, oldStats.completionRate + (delta * 5)),
+          totalCompletions: Math.max(0, oldStats.totalCompletions + delta)
+        };
+      });
+      
+      // Now make the actual API call
       if (data.completed) {
         const response = await apiRequest("POST", "/api/completions", {
           habitId: data.habitId,
@@ -93,24 +142,21 @@ export function useHabits() {
       }
     },
     onSuccess: async () => {
-      console.log("Toggle completion success, updating cache");
+      console.log("Toggle completion success");
       
-      // Force immediate refetch - no optimistic updates to avoid type errors
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["/api/completions"] }),
-        queryClient.invalidateQueries({ queryKey: ["/api/stats"] })
-      ]);
+      // Silently update the queries in the background
+      queryClient.invalidateQueries({ queryKey: ["/api/completions"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
       
-      // Ensure immediate refresh of data
-      await Promise.all([
-        queryClient.refetchQueries({ queryKey: ["/api/habits"] }),
-        queryClient.refetchQueries({ queryKey: ["/api/stats"] }),
-        queryClient.refetchQueries({ queryKey: ["/api/completions"] })
-      ]).then(() => {
-        console.log("All data refetched successfully after toggle");
-      });
+      // No need to refetch immediately since we've already updated the UI optimistically
     },
     onError: (error) => {
+      // On error, invalidate all queries to get back to the correct state
+      queryClient.invalidateQueries({ queryKey: ["/api/completions"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+      queryClient.refetchQueries({ queryKey: ["/api/completions"] });
+      queryClient.refetchQueries({ queryKey: ["/api/stats"] });
+      
       toast({
         title: "Error",
         description: `Failed to update habit: ${error.message}`,
@@ -121,36 +167,40 @@ export function useHabits() {
   
   const deleteHabitMutation = useMutation({
     mutationFn: async (habitId: number) => {
-      return await apiRequest("DELETE", `/api/habits/${habitId}`);
-    },
-    onSuccess: async (_, habitId) => {
-      console.log(`Deleting habit ${habitId} from cache`);
+      console.log(`Deleting habit ${habitId}`);
       
-      // Optimistically update the UI by removing the habit from cache
+      // Optimistically update the habits cache
       queryClient.setQueryData<Habit[]>(["/api/habits"], (oldData = []) => {
         return oldData.filter(habit => habit.id !== habitId);
       });
       
-      // Also invalidate all relevant queries
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["/api/habits"] }),
-        queryClient.invalidateQueries({ queryKey: ["/api/completions"] }),
-        queryClient.invalidateQueries({ queryKey: ["/api/stats"] })
-      ]);
-      
-      // Ensure immediate refresh of data
-      await Promise.all([
-        queryClient.refetchQueries({ queryKey: ["/api/habits"] }),
-        queryClient.refetchQueries({ queryKey: ["/api/stats"] }),
-        queryClient.refetchQueries({ queryKey: ["/api/completions"] })
-      ]);
-      
-      toast({
-        title: "Success",
-        description: "Habit deleted successfully",
+      // Also update completions optimistically
+      queryClient.setQueryData<HabitCompletion[]>(["/api/completions"], (oldCompletions = []) => {
+        return oldCompletions.filter(c => c.habitId !== habitId);
       });
+      
+      // Make the actual API call
+      return await apiRequest("DELETE", `/api/habits/${habitId}`);
+    },
+    onSuccess: (_, habitId) => {
+      console.log(`Successfully deleted habit ${habitId}`);
+      
+      // Silently update data in background
+      queryClient.invalidateQueries({ queryKey: ["/api/habits"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/completions"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
     },
     onError: (error) => {
+      // On error, revert our optimistic updates
+      queryClient.invalidateQueries({ queryKey: ["/api/habits"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/completions"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+      
+      // Force refetch to correct data
+      queryClient.refetchQueries({ queryKey: ["/api/habits"] });
+      queryClient.refetchQueries({ queryKey: ["/api/completions"] });
+      queryClient.refetchQueries({ queryKey: ["/api/stats"] });
+      
       toast({
         title: "Error",
         description: `Failed to delete habit: ${error.message}`,
@@ -169,7 +219,7 @@ export function useHabits() {
   }, isLoading: isLoadingStats } = useQuery<HabitStats>({
     queryKey: ["/api/stats"],
     staleTime: 0,
-    refetchInterval: 5000,
+    refetchInterval: 0, // No automatic refetching
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
