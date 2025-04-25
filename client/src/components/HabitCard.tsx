@@ -1,7 +1,5 @@
 import { Habit } from "@shared/schema";
-import { format } from "date-fns";
 import { CheckIcon, Trash2Icon } from "lucide-react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
 interface HabitCardProps {
@@ -65,7 +63,7 @@ export function HabitCard({
         <Button
           onClick={onToggleCompletion}
           disabled={isPending}
-          size="sm"
+          size="sm" 
           className={isCompletedToday ? 
             "bg-purple-600 hover:bg-purple-700 text-white" : 
             "bg-transparent border border-purple-600 text-purple-500 hover:bg-purple-500/10"
