@@ -34,25 +34,27 @@ export function useHabits() {
   });
 
   const addHabitMutation = useMutation({
-    mutationFn: (habit: InsertHabit) => {
-      return apiRequest("POST", "/api/habits", habit);
+    mutationFn: async (habit: InsertHabit) => {
+      console.log("Adding habit:", habit);
+      const response = await apiRequest("POST", "/api/habits", habit);
+      const newHabit = await response.json();
+      return newHabit;
     },
-    onSuccess: (data) => {
-      console.log("Habit added successfully:", data);
+    onSuccess: (newHabit) => {
+      console.log("Habit added successfully:", newHabit);
+      
+      // Immediately update the cache with the new habit
+      queryClient.setQueryData<Habit[]>(["/api/habits"], (oldData = []) => {
+        return [...oldData, newHabit as Habit];
+      });
       
       // Force immediate refetch of all data
       queryClient.invalidateQueries({ queryKey: ["/api/habits"] });
       queryClient.invalidateQueries({ queryKey: ["/api/completions"] });
       queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
       
-      // Wait for refetch to complete
-      Promise.all([
-        queryClient.refetchQueries({ queryKey: ["/api/habits"] }),
-        queryClient.refetchQueries({ queryKey: ["/api/completions"] }),
-        queryClient.refetchQueries({ queryKey: ["/api/stats"] })
-      ]).then(() => {
-        console.log("All data refetched successfully");
-      });
+      // Ensure immediate refresh
+      queryClient.refetchQueries({ queryKey: ["/api/habits"] });
       
       toast({
         title: "Success",
@@ -70,30 +72,29 @@ export function useHabits() {
   });
 
   const toggleCompletionMutation = useMutation({
-    mutationFn: (data: { habitId: number; date: string; completed: boolean }) => {
+    mutationFn: async (data: { habitId: number; date: string; completed: boolean }) => {
       if (data.completed) {
-        return apiRequest("POST", "/api/completions", {
+        const response = await apiRequest("POST", "/api/completions", {
           habitId: data.habitId,
           date: data.date,
         });
+        return await response.json();
       } else {
-        return apiRequest("DELETE", `/api/completions/${data.habitId}/${data.date}`);
+        return await apiRequest("DELETE", `/api/completions/${data.habitId}/${data.date}`);
       }
     },
     onSuccess: () => {
-      // Force immediate refetch of all data
-      queryClient.invalidateQueries({ queryKey: ["/api/habits"] });
+      console.log("Toggle completion success, updating cache");
+      
+      // Force immediate refetch - no optimistic updates to avoid type errors
       queryClient.invalidateQueries({ queryKey: ["/api/completions"] });
       queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
       
-      // Wait for refetch to complete
-      Promise.all([
-        queryClient.refetchQueries({ queryKey: ["/api/habits"] }),
-        queryClient.refetchQueries({ queryKey: ["/api/completions"] }),
-        queryClient.refetchQueries({ queryKey: ["/api/stats"] })
-      ]).then(() => {
+      // Immediate refetch for accurate data
+      queryClient.refetchQueries({ queryKey: ["/api/completions"] }).then(() => {
         console.log("All data refetched successfully after toggle");
       });
+      queryClient.refetchQueries({ queryKey: ["/api/stats"] });
     },
     onError: (error) => {
       toast({

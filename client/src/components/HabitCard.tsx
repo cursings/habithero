@@ -35,10 +35,9 @@ export function HabitCard({
           <h3 className="font-bold text-lg dark:text-white">{habit.name}</h3>
           <p className="text-sm text-muted-foreground dark:text-gray-300">{habit.frequency}</p>
         </div>
-        <motion.button
+        <button
           onClick={onToggleCompletion}
           disabled={isPending}
-          whileTap={{ scale: 0.9 }}
           className={`rounded-full w-10 h-10 flex items-center justify-center transition-all ${
             isCompletedToday 
               ? "bg-primary text-white" 
@@ -46,30 +45,12 @@ export function HabitCard({
           } ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
           aria-label={isCompletedToday ? "Mark as not completed" : "Mark as completed"}
         >
-          <AnimatePresence mode="wait">
-            {isCompletedToday ? (
-              <motion.div
-                key="check"
-                initial={{ scale: 0.5, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.5, opacity: 0 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="flex items-center justify-center w-4 h-4"
-              >
-                <CheckIcon className="h-4 w-4" />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="circle"
-                initial={{ scale: 0.5, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.5, opacity: 0 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="w-4 h-4 border-2 border-primary dark:border-white rounded-full"
-              />
-            )}
-          </AnimatePresence>
-        </motion.button>
+          {isCompletedToday ? (
+            <CheckIcon className="h-4 w-4" />
+          ) : (
+            <div className="w-4 h-4 border-2 border-primary dark:border-white rounded-full" />
+          )}
+        </button>
       </div>
       
       <div className="mt-4">
@@ -80,8 +61,8 @@ export function HabitCard({
         <div className="w-full h-2 bg-secondary rounded-full overflow-hidden">
           <motion.div 
             className="h-2 bg-primary rounded-full" 
-            initial={{ width: 0 }}
-            animate={{ width: `${weeklyProgress}%` }}
+            initial={{ width: "0%" }}
+            animate={{ width: `${weeklyProgress || 0}%` }}
             transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.1 }}
           />
         </div>
