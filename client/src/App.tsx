@@ -119,17 +119,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-pattern transition-all duration-500 relative">
-        {/* Centered Add Habit Button */}
-        <div className={`fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 transition-opacity duration-300 ${habits && habits.length > 0 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-          <Button
-            onClick={() => setIsAddHabitModalOpen(true)}
-            className="gap-2 rounded-full bg-purple-600 hover:bg-purple-700 text-white shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 px-6 py-3"
-          >
-            <PlusIcon className="h-4 w-4" />
-            Add Habit
-          </Button>
-        </div>
-        
         {/* Main Content */}
         <main className="max-w-4xl mx-auto px-4 py-8 pb-20">
           {/* Habits List */}
@@ -153,82 +142,95 @@ function App() {
                     ))}
                   </div>
                 ) : habits && habits.length > 0 ? (
-                  <div className="habit-grid" key="habits-list">
-                    {habits.map(habit => (
-                      <motion.div
-                        key={habit.id}
-                        initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ 
-                          opacity: 0, 
-                          scale: 0.8, 
-                          x: -30,
-                          rotate: -5,
-                          transition: { duration: 0.3, ease: "easeInOut" }
-                        }}
-                        transition={{ duration: 0.3 }}
-                        layout
-                      >
-                        <div className="bg-gray-800 rounded-xl p-5 shadow border border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/10 hover:border-gray-600">
-                          <div className="flex justify-between items-center">
-                            <div>
-                              <h3 className="font-bold text-lg text-white group-hover:text-primary">{habit.name}</h3>
-                              <p className="text-sm text-gray-400">{habit.frequency}</p>
+                  <div className="flex flex-col" key="habits-list">
+                    <div className="habit-grid">
+                      {habits.map(habit => (
+                        <motion.div
+                          key={habit.id}
+                          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ 
+                            opacity: 0, 
+                            scale: 0.8, 
+                            x: -30,
+                            rotate: -5,
+                            transition: { duration: 0.3, ease: "easeInOut" }
+                          }}
+                          transition={{ duration: 0.3 }}
+                          layout
+                        >
+                          <div className="bg-gray-800 rounded-xl p-5 shadow border border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/10 hover:border-gray-600">
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <h3 className="font-bold text-lg text-white group-hover:text-primary">{habit.name}</h3>
+                                <p className="text-sm text-gray-400">{habit.frequency}</p>
+                              </div>
+                              <div className="flex gap-2 items-center">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-gray-500 hover:text-red-400 h-8 w-8 transition-colors"
+                                  onClick={() => handleDeleteHabit(habit.id)}
+                                  disabled={isPendingDeleteHabit}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
                             </div>
-                            <div className="flex gap-2 items-center">
+                            
+                            <div className="mt-4">
+                              <div className="flex justify-between items-center mb-1">
+                                <span className="text-xs text-gray-400">Weekly progress</span>
+                                <span className="text-xs font-medium text-gray-300">{getHabitWeeklyProgress(habit.id) || 0}%</span>
+                              </div>
+                              <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden shadow">
+                                <div 
+                                  className="h-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full transition-all duration-500 ease-out shadow min-w-[4px]"
+                                  style={{ width: `${Math.max(getHabitWeeklyProgress(habit.id) || 0, 1)}%` }}
+                                />
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center justify-between mt-4">
+                              <div className="text-xs text-gray-400">
+                                {getHabitCurrentStreak(habit.id) > 0 ? (
+                                  <span>{getHabitCurrentStreak(habit.id)} day streak</span>
+                                ) : (
+                                  <span>0 day streak</span>
+                                )}
+                              </div>
+                              
                               <Button
-                                variant="ghost"
-                                size="icon"
-                                className="text-gray-500 hover:text-red-400 h-8 w-8 transition-colors"
-                                onClick={() => handleDeleteHabit(habit.id)}
-                                disabled={isPendingDeleteHabit}
+                                onClick={() => handleToggleCompletion(habit.id)}
+                                disabled={isPendingToggleCompletion}
+                                size="sm"
+                                className={isHabitCompletedToday(habit.id) ? 
+                                  "bg-gray-700 hover:bg-gray-600 text-gray-300 border border-gray-600 transition-all duration-200" : 
+                                  "bg-purple-600 hover:bg-purple-700 text-white transition-all duration-200"
+                                }
                               >
-                                <Trash2 className="h-4 w-4" />
+                                {isHabitCompletedToday(habit.id) ? (
+                                  <><CheckIcon className="h-3.5 w-3.5 mr-1.5 text-gray-300" /> Completed</>
+                                ) : (
+                                  "Complete"
+                                )}
                               </Button>
                             </div>
                           </div>
-                          
-                          <div className="mt-4">
-                            <div className="flex justify-between items-center mb-1">
-                              <span className="text-xs text-gray-400">Weekly progress</span>
-                              <span className="text-xs font-medium text-gray-300">{getHabitWeeklyProgress(habit.id) || 0}%</span>
-                            </div>
-                            <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden shadow">
-                              <div 
-                                className="h-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full transition-all duration-500 ease-out shadow min-w-[4px]"
-                                style={{ width: `${Math.max(getHabitWeeklyProgress(habit.id) || 0, 1)}%` }}
-                              />
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center justify-between mt-4">
-                            <div className="text-xs text-gray-400">
-                              {getHabitCurrentStreak(habit.id) > 0 ? (
-                                <span>{getHabitCurrentStreak(habit.id)} day streak</span>
-                              ) : (
-                                <span>0 day streak</span>
-                              )}
-                            </div>
-                            
-                            <Button
-                              onClick={() => handleToggleCompletion(habit.id)}
-                              disabled={isPendingToggleCompletion}
-                              size="sm"
-                              className={isHabitCompletedToday(habit.id) ? 
-                                "bg-gray-700 hover:bg-gray-600 text-gray-300 border border-gray-600 transition-all duration-200" : 
-                                "bg-purple-600 hover:bg-purple-700 text-white transition-all duration-200"
-                              }
-                            >
-                              {isHabitCompletedToday(habit.id) ? (
-                                <><CheckIcon className="h-3.5 w-3.5 mr-1.5 text-gray-300" /> Completed</>
-                              ) : (
-                                "Complete"
-                              )}
-                            </Button>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
+                        </motion.div>
+                      ))}
+                    </div>
+                    
+                    {/* Add Habit Button - positioned at the bottom */}
+                    <div className="flex justify-center mt-8 mb-4">
+                      <Button
+                        onClick={() => setIsAddHabitModalOpen(true)}
+                        className="gap-2 rounded-full bg-purple-600 hover:bg-purple-700 text-white shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 px-6 py-3"
+                      >
+                        <PlusIcon className="h-4 w-4" />
+                        Add Habit
+                      </Button>
+                    </div>
                   </div>
                 ) : (
                   <motion.div
