@@ -36,7 +36,8 @@ export function CalendarHeatmap({ completions, selectedHabitId }: CalendarHeatma
     return daysArray;
   }, [currentMonth]);
   
-  const daysOfWeek = ["S", "M", "T", "W", "T", "F", "S"];
+  // Use more unique day identifiers to avoid duplicate keys
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   
   const getHabitDotsForDay = (date: Date) => {
     // Filter completions for the selected date and habit (if a habit is selected)
@@ -95,7 +96,7 @@ export function CalendarHeatmap({ completions, selectedHabitId }: CalendarHeatma
         {/* Days of Week */}
         {daysOfWeek.map((day) => (
           <div key={day} className="text-center text-sm font-medium p-2">
-            {day}
+            {day.charAt(0)}
           </div>
         ))}
         
@@ -107,9 +108,9 @@ export function CalendarHeatmap({ completions, selectedHabitId }: CalendarHeatma
                 {format(day, "d")}
               </span>
               <div className="flex flex-wrap gap-1 p-1">
-                {getHabitDotsForDay(day).map((completion, i) => (
+                {getHabitDotsForDay(day).map((completion) => (
                   <div 
-                    key={i}
+                    key={`${completion.id}-${completion.habitId}-${completion.date}`}
                     className="w-2 h-2 rounded-full bg-secondary"
                   />
                 ))}
