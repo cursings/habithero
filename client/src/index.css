@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom styles for habit grid */
+.habit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
 /* Set permanent dark theme with purple accent colors */
 :root {
   /* Dark theme colors - overriding the default colors */
@@ -41,10 +49,4 @@
 }
 
 /* Custom styles */
-.habit-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  width: 100%;
-}
 
