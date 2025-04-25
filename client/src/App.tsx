@@ -120,91 +120,10 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 transition-all duration-500">
-        {/* Header */}
-        <header className="sticky top-0 z-10 bg-gray-800 border-b border-gray-700 shadow-sm backdrop-blur-md bg-opacity-90">
-          <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div className="flex items-center space-x-2">
-              <CheckCircle2 className="h-7 w-7 text-purple-400" />
-              <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-400 to-indigo-300 text-transparent bg-clip-text">
-                Habit Tracker
-              </h1>
-            </div>
-            <div className="flex items-center">
-              <Button 
-                onClick={() => setIsAddHabitModalOpen(true)}
-                size="sm"
-                className="rounded-full bg-purple-500 hover:bg-purple-600 text-white transition-all duration-300 gap-1"
-              >
-                <PlusIcon className="h-4 w-4" />
-                <span className="hidden sm:inline">Add Habit</span>
-              </Button>
-            </div>
-          </div>
-        </header>
-        
         {/* Main Content */}
-        <main className="max-w-4xl mx-auto px-4 py-6 pb-20">
-          {/* Stats Cards */}
-          <section>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-              <Card className="p-4 border-none bg-gray-800 shadow-sm hover:shadow transition-all rounded-xl">
-                <div className="flex items-center gap-3">
-                  <div className="bg-blue-900/30 p-2 rounded-full">
-                    <CheckCircle2 className="h-5 w-5 text-blue-400" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400">Habits</p>
-                    <p className="text-xl font-bold text-white">{habits?.length || 0}</p>
-                  </div>
-                </div>
-              </Card>
-              
-              <Card className="p-4 border-none bg-gray-800 shadow-sm hover:shadow transition-all rounded-xl">
-                <div className="flex items-center gap-3">
-                  <div className="bg-green-900/30 p-2 rounded-full">
-                    <BarChart2 className="h-5 w-5 text-green-400" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400">Completion</p>
-                    <p className="text-xl font-bold text-white">{stats.completionRate}%</p>
-                  </div>
-                </div>
-              </Card>
-              
-              <Card className="p-4 border-none bg-gray-800 shadow-sm hover:shadow transition-all rounded-xl">
-                <div className="flex items-center gap-3">
-                  <div className="bg-purple-900/30 p-2 rounded-full">
-                    <Trophy className="h-5 w-5 text-purple-400" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400">Best Streak</p>
-                    <p className="text-xl font-bold text-white">{stats.longestStreak} days</p>
-                  </div>
-                </div>
-              </Card>
-              
-              <Card className="p-4 border-none bg-gray-800 shadow-sm hover:shadow transition-all rounded-xl">
-                <div className="flex items-center gap-3">
-                  <div className="bg-amber-900/30 p-2 rounded-full">
-                    <CalendarCheck className="h-5 w-5 text-amber-400" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400">Current Streak</p>
-                    <p className="text-xl font-bold text-white">{stats.currentStreak} days</p>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </section>
-          
+        <main className="max-w-4xl mx-auto px-4 py-8 pb-20">
           {/* Habits List */}
           <section>
-            <h2 className="text-xl font-bold mb-4 text-white flex items-center">
-              <span>My Habits</span>
-              <span className="ml-2 text-sm bg-gray-700 rounded-full px-2 py-0.5 text-gray-300">
-                {habits?.length || 0}
-              </span>
-            </h2>
             
             <div>
               <AnimatePresence>
@@ -295,6 +214,17 @@ function App() {
                         </div>
                       </motion.div>
                     ))}
+                    
+                    {/* Add Habit Button below existing habits */}
+                    <div className="flex justify-center mt-6">
+                      <Button
+                        onClick={() => setIsAddHabitModalOpen(true)}
+                        className="gap-2 rounded-full bg-purple-500 hover:bg-purple-600 text-white"
+                      >
+                        <PlusIcon className="h-4 w-4" />
+                        Add Habit
+                      </Button>
+                    </div>
                   </div>
                 ) : (
                   <motion.div
@@ -330,17 +260,7 @@ function App() {
           onAddHabit={addHabit}
           isPending={isPendingAddHabit}
         />
-        
-        {/* Bottom Add Button for Mobile */}
-        <div className="md:hidden fixed bottom-8 right-8">
-          <Button
-            onClick={() => setIsAddHabitModalOpen(true)}
-            size="icon"
-            className="h-14 w-14 rounded-full bg-purple-500 hover:bg-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-          >
-            <PlusIcon className="h-6 w-6" />
-          </Button>
-        </div>
+
       </div>
   );
 }
