@@ -2,7 +2,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { queryClient } from "@/lib/queryClient";
-import { Habit, HabitCompletion, InsertHabit } from "@shared/schema";
+import { Habit, HabitCompletion, InsertHabit, HabitStats } from "@shared/schema";
 import { format, subDays } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 
@@ -72,7 +72,14 @@ export function useHabits() {
     },
   });
 
-  const { data: stats, isLoading: isLoadingStats } = useQuery({
+  const { data: stats = {
+    completionRate: 0, 
+    completionRateChange: 0,
+    currentStreak: 0,
+    longestStreak: 0,
+    totalCompletions: 0,
+    totalCompletionsChange: 0
+  }, isLoading: isLoadingStats } = useQuery<HabitStats>({
     queryKey: ["/api/stats"],
   });
 

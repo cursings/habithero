@@ -2,11 +2,10 @@ import { useState } from "react";
 import { useHabits } from "@/hooks/use-habits";
 import { HabitCard } from "@/components/HabitCard";
 import { AddHabitModal } from "@/components/AddHabitModal";
-import { PlusIcon, ClipboardListIcon } from "lucide-react";
+import { PlusIcon, TrophyIcon, TargetIcon, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { format } from "date-fns";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface DashboardProps {
   setActiveTab: (tab: string) => void;
@@ -25,23 +24,9 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
     isHabitCompletedToday,
     getHabitCurrentStreak,
     getHabitWeeklyProgress,
-    getLastCompletedText
+    getLastCompletedText,
+    stats
   } = useHabits();
-
-  const [viewMode, setViewMode] = useState("Today");
-  const today = new Date();
-  const formattedDate = format(today, "EEEE, MMMM d");
-
-  // Simple function to calculate average weekly progress
-  const calculateOverallProgress = () => {
-    if (habits.length === 0) return 0;
-    
-    const totalProgress = habits.reduce((sum, habit) => {
-      return sum + getHabitWeeklyProgress(habit.id);
-    }, 0);
-    
-    return Math.round(totalProgress / habits.length);
-  };
 
   // Handler for toggling habit completion
   const handleToggleCompletion = (habitId: number) => {
@@ -56,59 +41,50 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
   };
 
   return (
-    <>
-      {/* Mobile Header */}
-      <header className="md:hidden flex items-center justify-between mb-6">
-        <div className="flex items-center">
-          <ClipboardListIcon className="h-7 w-7 text-primary" />
-          <h1 className="text-xl font-semibold ml-2">Habit Tracker</h1>
+    <div className="pb-20 max-w-3xl mx-auto">
+      {/* App Header */}
+      <header className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold">Habit Tracker</h1>
+          <p className="text-sm text-muted-foreground">Track your daily habits and build consistency</p>
         </div>
         <Button
-          size="icon"
+          size="sm"
           onClick={() => setIsAddHabitModalOpen(true)}
+          className="bg-primary rounded-full gap-1"
+          data-add-habit-button
         >
-          <PlusIcon className="h-5 w-5" />
+          <PlusIcon className="h-4 w-4" />
+          <span>Add Habit</span>
         </Button>
       </header>
 
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-        <h2 className="text-2xl font-semibold">Today's Habits</h2>
-        <div className="mt-3 md:mt-0 flex items-center">
-          <span className="text-sm mr-2">View:</span>
-          <Select defaultValue={viewMode} onValueChange={setViewMode}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select view" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Today">Today</SelectItem>
-              <SelectItem value="This Week">This Week</SelectItem>
-              <SelectItem value="All Habits">All Habits</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-3 gap-4 mb-8">
+        <Card className="p-4 rounded-xl bg-secondary/50 border-none">
+          <div className="flex flex-col items-center">
+            <TrophyIcon className="h-5 w-5 text-primary mb-1" />
+            <p className="text-xs text-muted-foreground">Longest Streak</p>
+            <p className="text-xl font-bold">{stats.longestStreak} days</p>
+          </div>
+        </Card>
+        
+        <Card className="p-4 rounded-xl bg-secondary/50 border-none">
+          <div className="flex flex-col items-center">
+            <TargetIcon className="h-5 w-5 text-primary mb-1" />
+            <p className="text-xs text-muted-foreground">Completion Rate</p>
+            <p className="text-xl font-bold">{stats.completionRate}%</p>
+          </div>
+        </Card>
+        
+        <Card className="p-4 rounded-xl bg-secondary/50 border-none">
+          <div className="flex flex-col items-center">
+            <CalendarIcon className="h-5 w-5 text-primary mb-1" />
+            <p className="text-xs text-muted-foreground">Total Habits</p>
+            <p className="text-xl font-bold">{habits ? habits.length : 0}</p>
+          </div>
+        </Card>
       </div>
-
-      {/* Date Display */}
-      <Card className="p-4 mb-6 shadow-sm">
-        <div className="flex justify-between items-center">
-          <div>
-            <span className="text-sm text-neutral-dark/70">{formattedDate}</span>
-            <h3 className="text-lg font-medium">Today</h3>
-          </div>
-          <div className="flex flex-col items-end">
-            <span className="text-sm font-medium text-accent">Weekly Progress</span>
-            <div className="w-32 h-2 bg-neutral rounded-full mt-1">
-              <div 
-                className="h-2 bg-accent rounded-full" 
-                style={{ width: `${calculateOverallProgress()}%` }}
-              ></div>
-            </div>
-            <span className="text-xs mt-1 text-neutral-dark/70">
-              {calculateOverallProgress()}% complete
-            </span>
-          </div>
-        </div>
-      </Card>
 
       {/* Habits List */}
       <div className="space-y-4">
@@ -131,16 +107,20 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
           ))
         ) : (
           // Empty state
-          <div className="bg-white rounded-lg p-8 shadow-sm border border-neutral text-center">
-            <ClipboardListIcon className="h-12 w-12 mx-auto text-neutral-dark/30" />
-            <h3 className="mt-4 text-lg font-medium">No habits yet</h3>
-            <p className="mt-1 text-neutral-dark/70">
+          <div className="bg-white rounded-xl p-8 text-center border border-neutral">
+            <div className="w-16 h-16 bg-secondary/50 flex items-center justify-center rounded-full mx-auto mb-4">
+              <CalendarIcon className="h-8 w-8 text-primary" />
+            </div>
+            <h3 className="text-xl font-bold">No habits yet</h3>
+            <p className="mt-2 text-muted-foreground">
               Start adding habits to track your progress
             </p>
             <Button
-              className="mt-4"
+              className="mt-6 bg-primary rounded-full"
               onClick={() => setIsAddHabitModalOpen(true)}
+              data-add-habit-button
             >
+              <PlusIcon className="h-4 w-4 mr-2" />
               Add Your First Habit
             </Button>
           </div>
@@ -154,6 +134,6 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
         onAddHabit={addHabit}
         isPending={isPendingAddHabit}
       />
-    </>
+    </div>
   );
 }

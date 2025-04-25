@@ -22,54 +22,60 @@ export function HabitCard({
   isPending
 }: HabitCardProps) {
   return (
-    <div className="bg-white rounded-lg p-5 shadow-sm border border-neutral transition-all hover:shadow-md">
-      <div className="flex justify-between">
+    <div className="bg-white rounded-xl p-5 shadow-sm border border-border transition-all hover:shadow-md">
+      <div className="flex justify-between items-center">
         <div>
-          <h3 className="font-medium text-lg">{habit.name}</h3>
-          <p className="text-sm text-neutral-dark/70">{habit.frequency}</p>
+          <h3 className="font-bold text-lg">{habit.name}</h3>
+          <p className="text-sm text-muted-foreground">{habit.frequency}</p>
         </div>
-        <div>
-          <button
-            onClick={onToggleCompletion}
-            disabled={isPending}
-            className={`rounded-full w-10 h-10 flex items-center justify-center transition-colors ${
-              isCompletedToday 
-                ? "bg-secondary text-white" 
-                : "bg-white border border-neutral text-neutral-dark"
-            } ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            {isCompletedToday ? (
-              <CheckIcon className="h-6 w-6" />
-            ) : (
-              <span>Done</span>
-            )}
-          </button>
-        </div>
+        <button
+          onClick={onToggleCompletion}
+          disabled={isPending}
+          className={`rounded-full w-10 h-10 flex items-center justify-center transition-colors ${
+            isCompletedToday 
+              ? "bg-primary text-white" 
+              : "bg-secondary text-primary"
+          } ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
+          aria-label={isCompletedToday ? "Mark as not completed" : "Mark as completed"}
+        >
+          {isCompletedToday ? (
+            <CheckIcon className="h-5 w-5" />
+          ) : (
+            <span className="text-xs font-medium">Done</span>
+          )}
+        </button>
       </div>
+      
       <div className="mt-4">
         <div className="flex justify-between items-center mb-1">
-          <span className="text-sm font-medium">Progress this week</span>
-          <span className="text-sm text-neutral-dark/70">{weeklyProgress}%</span>
+          <span className="text-xs font-medium text-muted-foreground">Weekly progress</span>
+          <span className="text-xs font-bold">{weeklyProgress}%</span>
         </div>
-        <div className="w-full h-2 bg-neutral rounded-full">
+        <div className="w-full h-2 bg-secondary rounded-full overflow-hidden">
           <div 
             className="h-2 bg-primary rounded-full" 
             style={{ width: `${weeklyProgress}%` }}
           ></div>
         </div>
       </div>
-      <div className="mt-3 flex justify-between">
-        {streak > 0 && (
-          <div className="flex items-center">
-            <FlameIcon className="h-5 w-5 text-accent" />
-            <span className="ml-1 text-sm font-medium text-accent">
+      
+      <div className="mt-3 flex justify-between items-center">
+        {streak > 0 ? (
+          <div className="flex items-center px-3 py-1 bg-secondary/50 rounded-full">
+            <FlameIcon className="h-4 w-4 text-primary" />
+            <span className="ml-1 text-xs font-bold">
               {streak} day streak
             </span>
           </div>
+        ) : (
+          <div></div>  
         )}
-        <span className="text-xs text-neutral-dark/70">
-          {lastCompleted !== "Never" && `Last completed: ${lastCompleted}`}
-        </span>
+        
+        {isCompletedToday && (
+          <span className="text-xs text-secondary-foreground font-medium px-3 py-1 bg-secondary/50 rounded-full">
+            Completed
+          </span>
+        )}
       </div>
     </div>
   );
