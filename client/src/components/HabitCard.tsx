@@ -1,7 +1,8 @@
 import { Habit } from "@shared/schema";
 import { format } from "date-fns";
 import { CheckIcon, FlameIcon } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 interface HabitCardProps {
   habit: Habit;
@@ -35,23 +36,20 @@ export function HabitCard({
           <h3 className="font-bold text-lg dark:text-white">{habit.name}</h3>
           <p className="text-sm text-muted-foreground dark:text-gray-300">{habit.frequency}</p>
         </div>
-        <button
+        <Button
           onClick={onToggleCompletion}
           disabled={isPending}
-          className={`rounded-full w-10 h-10 flex items-center justify-center transition-all cursor-pointer hover:opacity-80 active:scale-95 ${
-            isCompletedToday 
-              ? "bg-primary text-white" 
-              : "bg-secondary text-primary dark:text-white dark:bg-gray-700"
-          } ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
+          variant={isCompletedToday ? "default" : "secondary"}
+          size="icon"
+          className="w-10 h-10 rounded-full"
           aria-label={isCompletedToday ? "Mark as not completed" : "Mark as completed"}
-          type="button"
         >
           {isCompletedToday ? (
             <CheckIcon className="h-4 w-4" />
           ) : (
             <div className="w-4 h-4 border-2 border-primary dark:border-white rounded-full" />
           )}
-        </button>
+        </Button>
       </div>
       
       <div className="mt-4">
@@ -60,11 +58,9 @@ export function HabitCard({
           <span className="text-xs font-bold dark:text-white">{weeklyProgress}%</span>
         </div>
         <div className="w-full h-2 bg-secondary rounded-full overflow-hidden">
-          <motion.div 
-            className="h-2 bg-primary rounded-full" 
-            initial={{ width: "0%" }}
-            animate={{ width: `${weeklyProgress || 0}%` }}
-            transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.1 }}
+          <div 
+            className="h-2 bg-primary rounded-full transition-all duration-500 ease-out"
+            style={{ width: `${weeklyProgress || 0}%` }}
           />
         </div>
       </div>

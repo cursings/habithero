@@ -41,12 +41,15 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
     // Toggle to the opposite state
     console.log(`Toggling habit ${habitId} from ${currentlyCompleted ? "completed" : "not completed"} to ${!currentlyCompleted ? "completed" : "not completed"}`);
     
-    // Call the toggle function with the new state
-    toggleCompletion({
-      habitId,
-      date: today,
-      completed: !currentlyCompleted
-    });
+    // Use setTimeout to ensure React has time to process the click event fully
+    setTimeout(() => {
+      // Call the toggle function with the new state
+      toggleCompletion({
+        habitId,
+        date: today,
+        completed: !currentlyCompleted
+      });
+    }, 10);
   };
 
   return (
