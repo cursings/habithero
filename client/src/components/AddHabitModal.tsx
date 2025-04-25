@@ -134,9 +134,9 @@ export function AddHabitModal({ isOpen, onClose, onAddHabit, isPending }: AddHab
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="space-y-2 border border-border p-3 rounded-xl bg-secondary/30 overflow-hidden"
+                  className="space-y-2 border border-border dark:border-gray-600 p-3 rounded-xl bg-secondary/30 dark:bg-gray-700 overflow-hidden"
                 >
-                  <Label className="text-sm font-medium">Which days?</Label>
+                  <Label className="text-sm font-medium dark:text-white">Which days?</Label>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {days.map((day, index) => (
                       <motion.div
@@ -172,17 +172,17 @@ export function AddHabitModal({ isOpen, onClose, onAddHabit, isPending }: AddHab
             
             <div className="space-y-2">
               <div className="flex items-center">
-                <AlarmClock className="h-5 w-5 text-primary mr-2" />
-                <Label htmlFor="reminder" className="text-sm font-medium">Set a reminder? (Optional)</Label>
+                <AlarmClock className="h-5 w-5 text-primary dark:text-purple-400 mr-2" />
+                <Label htmlFor="reminder" className="text-sm font-medium dark:text-white">Set a reminder? (Optional)</Label>
               </div>
               <Input
                 id="reminder"
                 type="time"
                 value={reminderTime}
                 onChange={(e) => setReminderTime(e.target.value)}
-                className="rounded-lg border-border"
+                className="rounded-lg border-border dark:border-gray-600"
               />
-              <p className="text-xs text-muted-foreground">We'll send you a notification at this time</p>
+              <p className="text-xs text-muted-foreground dark:text-gray-300">We'll send you a notification at this time</p>
             </div>
           </div>
           

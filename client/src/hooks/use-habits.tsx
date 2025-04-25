@@ -29,9 +29,20 @@ export function useHabits() {
     },
     onSuccess: (data) => {
       console.log("Habit added successfully:", data);
-      // Force an immediate refetch of habits
+      
+      // Force immediate refetch of all data
       queryClient.invalidateQueries({ queryKey: ["/api/habits"] });
-      queryClient.refetchQueries({ queryKey: ["/api/habits"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/completions"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+      
+      // Wait for refetch to complete
+      Promise.all([
+        queryClient.refetchQueries({ queryKey: ["/api/habits"] }),
+        queryClient.refetchQueries({ queryKey: ["/api/completions"] }),
+        queryClient.refetchQueries({ queryKey: ["/api/stats"] })
+      ]).then(() => {
+        console.log("All data refetched successfully");
+      });
       
       toast({
         title: "Success",
@@ -60,8 +71,19 @@ export function useHabits() {
       }
     },
     onSuccess: () => {
+      // Force immediate refetch of all data
+      queryClient.invalidateQueries({ queryKey: ["/api/habits"] });
       queryClient.invalidateQueries({ queryKey: ["/api/completions"] });
       queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+      
+      // Wait for refetch to complete
+      Promise.all([
+        queryClient.refetchQueries({ queryKey: ["/api/habits"] }),
+        queryClient.refetchQueries({ queryKey: ["/api/completions"] }),
+        queryClient.refetchQueries({ queryKey: ["/api/stats"] })
+      ]).then(() => {
+        console.log("All data refetched successfully after toggle");
+      });
     },
     onError: (error) => {
       toast({
