@@ -115,7 +115,7 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
         {isLoadingHabits ? (
           // Loading state
           <div className="text-center py-8">Loading habits...</div>
-        ) : habits.length > 0 ? (
+        ) : habits && habits.length > 0 ? (
           // Map through habits
           habits.map(habit => (
             <HabitCard
