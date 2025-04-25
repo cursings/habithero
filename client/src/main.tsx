@@ -12,7 +12,6 @@ createRoot(document.getElementById("root")!).render(
     <ThemeProvider defaultTheme="light" storageKey="ui-theme">
       <TooltipProvider>
         <App />
-        <Toaster />
       </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>

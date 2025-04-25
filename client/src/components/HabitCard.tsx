@@ -1,6 +1,7 @@
 import { Habit } from "@shared/schema";
 import { format } from "date-fns";
 import { CheckIcon, FlameIcon } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface HabitCardProps {
   habit: Habit;
@@ -22,28 +23,52 @@ export function HabitCard({
   isPending
 }: HabitCardProps) {
   return (
-    <div className="bg-white rounded-xl p-5 shadow-sm border border-border transition-all hover:shadow-md">
+    <motion.div 
+      className="bg-white dark:bg-card rounded-xl p-5 shadow-sm border border-border transition-colors hover:shadow-md"
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 200, damping: 20 }}
+      whileHover={{ y: -2 }}
+    >
       <div className="flex justify-between items-center">
         <div>
           <h3 className="font-bold text-lg">{habit.name}</h3>
           <p className="text-sm text-muted-foreground">{habit.frequency}</p>
         </div>
-        <button
+        <motion.button
           onClick={onToggleCompletion}
           disabled={isPending}
-          className={`rounded-full w-10 h-10 flex items-center justify-center transition-colors ${
+          whileTap={{ scale: 0.9 }}
+          className={`rounded-full w-10 h-10 flex items-center justify-center transition-all ${
             isCompletedToday 
               ? "bg-primary text-white" 
               : "bg-secondary text-primary"
           } ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
           aria-label={isCompletedToday ? "Mark as not completed" : "Mark as completed"}
         >
-          {isCompletedToday ? (
-            <CheckIcon className="h-5 w-5" />
-          ) : (
-            <span className="text-xs font-medium">Done</span>
-          )}
-        </button>
+          <AnimatePresence mode="wait">
+            {isCompletedToday ? (
+              <motion.div
+                key="check"
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.5, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                <CheckIcon className="h-5 w-5" />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="circle"
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.5, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="w-5 h-5 border-2 border-primary rounded-full"
+              />
+            )}
+          </AnimatePresence>
+        </motion.button>
       </div>
       
       <div className="mt-4">
@@ -52,10 +77,12 @@ export function HabitCard({
           <span className="text-xs font-bold">{weeklyProgress}%</span>
         </div>
         <div className="w-full h-2 bg-secondary rounded-full overflow-hidden">
-          <div 
+          <motion.div 
             className="h-2 bg-primary rounded-full" 
-            style={{ width: `${weeklyProgress}%` }}
-          ></div>
+            initial={{ width: 0 }}
+            animate={{ width: `${weeklyProgress}%` }}
+            transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.1 }}
+          />
         </div>
       </div>
       
@@ -77,6 +104,6 @@ export function HabitCard({
           </span>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
