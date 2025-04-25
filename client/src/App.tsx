@@ -13,17 +13,16 @@ import { format } from "date-fns";
 // Components
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Toaster } from "@/components/ui/toaster";
 import { Button } from "@/components/ui/button";
 import { AddHabitModal } from "@/components/AddHabitModal";
 import { Card } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
 
 // Hooks
 import { useHabits } from "@/hooks/use-habits";
+import { queryClient } from "@/lib/queryClient";
+import { Habit, HabitCompletion } from "@shared/schema";
 
 function App() {
-  const { toast } = useToast();
   const { 
     habits, 
     isLoadingHabits, 
@@ -42,33 +41,49 @@ function App() {
     stats
   } = useHabits();
 
-  // Handler for toggling habit completion
+  // Handler for toggling habit completion with optimistic updates for instant reactivity
   const handleToggleCompletion = (habitId: number) => {
     const today = format(new Date(), "yyyy-MM-dd");
     const currentlyCompleted = isHabitCompletedToday(habitId);
     
-    // Toggle the completion status
+    // Optimistically update the UI before the server response
+    // This makes the app feel instant and responsive
+    queryClient.setQueryData<HabitCompletion[]>(['/api/completions'], (oldCompletions = []) => {
+      if (currentlyCompleted) {
+        // If currently completed, remove the completion from cache
+        return oldCompletions.filter(
+          c => !(c.habitId === habitId && c.date === today)
+        );
+      } else {
+        // If not completed, add a new completion to cache
+        return [...oldCompletions, {
+          id: Date.now(), // Temporary ID that will be replaced on server response
+          habitId,
+          date: today,
+          createdAt: new Date().toISOString()
+        } as HabitCompletion];
+      }
+    });
+    
+    // Also update the UI toggle state immediately
+    // The actual API call happens in the background
     toggleCompletion({
       habitId,
       date: today,
       completed: !currentlyCompleted
     });
-    
-    // Show toast to confirm the action
-    const message = currentlyCompleted 
-      ? "Habit marked as not completed" 
-      : "Habit marked as completed";
-      
-    toast({
-      title: "Success",
-      description: message,
-      duration: 2000, // 2 seconds
-    });
   };
   
-  // Handler for deleting a habit
+  // Handler for deleting a habit with optimistic updates
   const handleDeleteHabit = (habitId: number) => {
     if (window.confirm("Are you sure you want to delete this habit?")) {
+      // Optimistically update the UI before the server response
+      queryClient.setQueryData<Habit[]>(['/api/habits'], (oldHabits = []) => {
+        console.log("Deleting habit", habitId, "from cache");
+        return oldHabits.filter(h => h.id !== habitId);
+      });
+      
+      // Perform the actual deletion
       deleteHabit(habitId);
     }
   };
@@ -308,7 +323,6 @@ function App() {
           </Button>
         </div>
       </div>
-      <Toaster />
     </ThemeProvider>
   );
 }
