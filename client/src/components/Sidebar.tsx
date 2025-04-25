@@ -26,7 +26,7 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
         <ul className="space-y-2">
           <li>
             <Link href="/">
-              <a 
+              <div 
                 onClick={() => handleTabChange('dashboard')} 
                 className={`flex items-center p-3 rounded-lg transition-colors cursor-pointer ${
                   activeTab === 'dashboard' 
@@ -36,12 +36,12 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
               >
                 <LayoutDashboardIcon className="h-5 w-5 mr-2" />
                 Dashboard
-              </a>
+              </div>
             </Link>
           </li>
           <li>
             <Link href="/calendar">
-              <a 
+              <div 
                 onClick={() => handleTabChange('calendar')} 
                 className={`flex items-center p-3 rounded-lg transition-colors cursor-pointer ${
                   activeTab === 'calendar' 
@@ -51,12 +51,12 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
               >
                 <CalendarIcon className="h-5 w-5 mr-2" />
                 Calendar
-              </a>
+              </div>
             </Link>
           </li>
           <li>
             <Link href="/stats">
-              <a 
+              <div 
                 onClick={() => handleTabChange('stats')} 
                 className={`flex items-center p-3 rounded-lg transition-colors cursor-pointer ${
                   activeTab === 'stats' 
@@ -66,12 +66,12 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
               >
                 <BarChartIcon className="h-5 w-5 mr-2" />
                 Stats
-              </a>
+              </div>
             </Link>
           </li>
           <li>
             <Link href="/settings">
-              <a 
+              <div 
                 onClick={() => handleTabChange('settings')} 
                 className={`flex items-center p-3 rounded-lg transition-colors cursor-pointer ${
                   activeTab === 'settings' 
@@ -81,7 +81,7 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
               >
                 <SettingsIcon className="h-5 w-5 mr-2" />
                 Settings
-              </a>
+              </div>
             </Link>
           </li>
         </ul>

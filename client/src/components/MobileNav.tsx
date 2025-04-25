@@ -26,7 +26,7 @@ export default function MobileNav({ activeTab, setActiveTab }: MobileNavProps) {
       
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-neutral flex justify-around p-2 z-10">
         <Link href="/">
-          <a 
+          <div 
             onClick={() => handleTabChange('dashboard')} 
             className={`flex flex-col items-center py-1 px-3 ${
               activeTab === 'dashboard' ? 'text-primary' : 'text-neutral-dark/70'
@@ -34,10 +34,10 @@ export default function MobileNav({ activeTab, setActiveTab }: MobileNavProps) {
           >
             <LayoutDashboardIcon className="h-6 w-6" />
             <span className="text-xs mt-1">Dashboard</span>
-          </a>
+          </div>
         </Link>
         <Link href="/calendar">
-          <a 
+          <div 
             onClick={() => handleTabChange('calendar')} 
             className={`flex flex-col items-center py-1 px-3 ${
               activeTab === 'calendar' ? 'text-primary' : 'text-neutral-dark/70'
@@ -45,10 +45,10 @@ export default function MobileNav({ activeTab, setActiveTab }: MobileNavProps) {
           >
             <CalendarIcon className="h-6 w-6" />
             <span className="text-xs mt-1">Calendar</span>
-          </a>
+          </div>
         </Link>
         <Link href="/stats">
-          <a 
+          <div 
             onClick={() => handleTabChange('stats')} 
             className={`flex flex-col items-center py-1 px-3 ${
               activeTab === 'stats' ? 'text-primary' : 'text-neutral-dark/70'
@@ -56,10 +56,10 @@ export default function MobileNav({ activeTab, setActiveTab }: MobileNavProps) {
           >
             <BarChartIcon className="h-6 w-6" />
             <span className="text-xs mt-1">Stats</span>
-          </a>
+          </div>
         </Link>
         <Link href="/settings">
-          <a 
+          <div 
             onClick={() => handleTabChange('settings')} 
             className={`flex flex-col items-center py-1 px-3 ${
               activeTab === 'settings' ? 'text-primary' : 'text-neutral-dark/70'
@@ -67,7 +67,7 @@ export default function MobileNav({ activeTab, setActiveTab }: MobileNavProps) {
           >
             <SettingsIcon className="h-6 w-6" />
             <span className="text-xs mt-1">Settings</span>
-          </a>
+          </div>
         </Link>
       </nav>
     </>

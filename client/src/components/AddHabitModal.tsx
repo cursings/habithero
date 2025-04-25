@@ -31,6 +31,12 @@ export function AddHabitModal({ isOpen, onClose, onAddHabit, isPending }: AddHab
       frequencyValue = customDays.join(", ");
     }
     
+    console.log("Adding habit:", {
+      name: habitName,
+      frequency: frequencyValue,
+      reminderTime: reminderTime || null
+    });
+    
     onAddHabit({
       name: habitName,
       frequency: frequencyValue,

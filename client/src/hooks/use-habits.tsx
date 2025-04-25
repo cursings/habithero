@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { queryClient } from "@/lib/queryClient";
 import { Habit, HabitCompletion, InsertHabit } from "@shared/schema";
@@ -11,19 +11,28 @@ export function useHabits() {
   const [isAddHabitModalOpen, setIsAddHabitModalOpen] = useState(false);
 
   const { data: habits = [], isLoading: isLoadingHabits } = useQuery<Habit[]>({
-    queryKey: ["/api/habits"],
+    queryKey: ["/api/habits"]
   });
 
+  // Log habits whenever they change
+  useEffect(() => {
+    console.log("Current habits:", habits);
+  }, [habits]);
+
   const { data: completions = [], isLoading: isLoadingCompletions } = useQuery<HabitCompletion[]>({
-    queryKey: ["/api/completions"],
+    queryKey: ["/api/completions"]
   });
 
   const addHabitMutation = useMutation({
     mutationFn: (habit: InsertHabit) => {
       return apiRequest("POST", "/api/habits", habit);
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("Habit added successfully:", data);
+      // Force an immediate refetch of habits
       queryClient.invalidateQueries({ queryKey: ["/api/habits"] });
+      queryClient.refetchQueries({ queryKey: ["/api/habits"] });
+      
       toast({
         title: "Success",
         description: "Habit added successfully",
@@ -112,7 +121,7 @@ export function useHabits() {
 
   const getHabitWeeklyProgress = (habitId: number): number => {
     // Calculate completion percentage for the last 7 days
-    const dates = [];
+    const dates: string[] = [];
     const today = new Date();
     
     for (let i = 0; i < 7; i++) {
