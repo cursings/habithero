@@ -96,8 +96,8 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
         <Card className="p-4 rounded-xl bg-secondary/50 border-none">
           <div className="flex flex-col items-center">
             <TrophyIcon className="h-5 w-5 text-primary mb-1" />
-            <p className="text-xs text-muted-foreground">Longest Streak</p>
-            <p className="text-xl font-bold">{stats.longestStreak} days</p>
+            <p className="text-xs text-muted-foreground">Current Streak</p>
+            <p className="text-xl font-bold">{stats.currentStreak} days</p>
           </div>
         </Card>
         
@@ -139,16 +139,16 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
           ))
         ) : (
           // Empty state
-          <div className="bg-white rounded-xl p-8 text-center border border-neutral">
-            <div className="w-16 h-16 bg-secondary/50 flex items-center justify-center rounded-full mx-auto mb-4">
-              <CalendarIcon className="h-8 w-8 text-primary" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center border border-neutral dark:border-gray-700 dark:text-white">
+            <div className="w-16 h-16 bg-secondary/50 dark:bg-gray-700 flex items-center justify-center rounded-full mx-auto mb-4">
+              <CalendarIcon className="h-8 w-8 text-primary dark:text-purple-400" />
             </div>
-            <h3 className="text-xl font-bold">No habits yet</h3>
-            <p className="mt-2 text-muted-foreground">
+            <h3 className="text-xl font-bold dark:text-white">No habits yet</h3>
+            <p className="mt-2 text-muted-foreground dark:text-gray-300">
               Start adding habits to track your progress
             </p>
             <Button
-              className="mt-6 bg-primary rounded-full"
+              className="mt-6 bg-primary rounded-full text-white"
               onClick={() => setIsAddHabitModalOpen(true)}
               data-add-habit-button
             >

@@ -24,7 +24,7 @@ export function HabitCard({
 }: HabitCardProps) {
   return (
     <motion.div 
-      className="bg-white dark:bg-card rounded-xl p-5 shadow-sm border border-border transition-colors hover:shadow-md"
+      className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border border-border dark:border-gray-700 transition-colors hover:shadow-md dark:text-gray-100"
       initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: "spring", stiffness: 200, damping: 20 }}
@@ -32,8 +32,8 @@ export function HabitCard({
     >
       <div className="flex justify-between items-center">
         <div>
-          <h3 className="font-bold text-lg">{habit.name}</h3>
-          <p className="text-sm text-muted-foreground">{habit.frequency}</p>
+          <h3 className="font-bold text-lg dark:text-white">{habit.name}</h3>
+          <p className="text-sm text-muted-foreground dark:text-gray-300">{habit.frequency}</p>
         </div>
         <motion.button
           onClick={onToggleCompletion}
@@ -42,7 +42,7 @@ export function HabitCard({
           className={`rounded-full w-10 h-10 flex items-center justify-center transition-all ${
             isCompletedToday 
               ? "bg-primary text-white" 
-              : "bg-secondary text-primary"
+              : "bg-secondary text-primary dark:text-white dark:bg-gray-700"
           } ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
           aria-label={isCompletedToday ? "Mark as not completed" : "Mark as completed"}
         >
@@ -73,8 +73,8 @@ export function HabitCard({
       
       <div className="mt-4">
         <div className="flex justify-between items-center mb-1">
-          <span className="text-xs font-medium text-muted-foreground">Weekly progress</span>
-          <span className="text-xs font-bold">{weeklyProgress}%</span>
+          <span className="text-xs font-medium text-muted-foreground dark:text-gray-300">Weekly progress</span>
+          <span className="text-xs font-bold dark:text-white">{weeklyProgress}%</span>
         </div>
         <div className="w-full h-2 bg-secondary rounded-full overflow-hidden">
           <motion.div 
@@ -88,9 +88,9 @@ export function HabitCard({
       
       <div className="mt-3 flex justify-between items-center">
         {streak > 0 ? (
-          <div className="flex items-center px-3 py-1 bg-secondary/50 rounded-full">
-            <FlameIcon className="h-4 w-4 text-primary" />
-            <span className="ml-1 text-xs font-bold">
+          <div className="flex items-center px-3 py-1 bg-secondary/50 dark:bg-gray-700 rounded-full">
+            <FlameIcon className="h-4 w-4 text-primary dark:text-orange-400" />
+            <span className="ml-1 text-xs font-bold dark:text-white">
               {streak} day streak
             </span>
           </div>
@@ -99,7 +99,7 @@ export function HabitCard({
         )}
         
         {isCompletedToday && (
-          <span className="text-xs text-secondary-foreground font-medium px-3 py-1 bg-secondary/50 rounded-full">
+          <span className="text-xs text-secondary-foreground dark:text-white font-medium px-3 py-1 bg-secondary/50 dark:bg-gray-700 rounded-full">
             Completed
           </span>
         )}
