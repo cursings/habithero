@@ -17,11 +17,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { Button } from "@/components/ui/button";
 import { AddHabitModal } from "@/components/AddHabitModal";
 import { Card } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
 
 // Hooks
 import { useHabits } from "@/hooks/use-habits";
 
 function App() {
+  const { toast } = useToast();
   const { 
     habits, 
     isLoadingHabits, 
@@ -50,6 +52,17 @@ function App() {
       habitId,
       date: today,
       completed: !currentlyCompleted
+    });
+    
+    // Show toast to confirm the action
+    const message = currentlyCompleted 
+      ? "Habit marked as not completed" 
+      : "Habit marked as completed";
+      
+    toast({
+      title: "Success",
+      description: message,
+      duration: 2000, // 2 seconds
     });
   };
   
@@ -197,16 +210,25 @@ function App() {
                               disabled={isPendingToggleCompletion}
                               variant={isHabitCompletedToday(habit.id) ? "default" : "outline"}
                               size="icon"
-                              className={`rounded-full h-10 w-10 transition-all duration-300 ${
+                              aria-label={isHabitCompletedToday(habit.id) ? "Unmark as completed" : "Mark as completed"}
+                              title={isHabitCompletedToday(habit.id) ? "Click to unmark as completed" : "Click to mark as completed"}
+                              className={`rounded-full h-10 w-10 transition-all duration-300 relative group ${
                                 isHabitCompletedToday(habit.id) 
-                                  ? "bg-green-500 hover:bg-green-600 text-white border-0" 
+                                  ? "bg-green-500 hover:bg-red-500 text-white border-0" 
                                   : "border-2 border-gray-300 dark:border-gray-600 hover:border-primary dark:hover:border-primary"
                               }`}
                             >
                               {isHabitCompletedToday(habit.id) ? (
-                                <CheckCircle2 className="h-5 w-5" />
+                                <>
+                                  <CheckCircle2 className="h-5 w-5 group-hover:opacity-0 transition-opacity absolute inset-0 m-auto" />
+                                  <span className="h-5 w-5 flex items-center justify-center text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity absolute inset-0 m-auto">×</span>
+                                  <span className="sr-only">Unmark habit as completed</span>
+                                </>
                               ) : (
-                                <div className="h-5 w-5 rounded-full" />
+                                <>
+                                  <div className="h-5 w-5 rounded-full" />
+                                  <span className="sr-only">Mark habit as completed</span>
+                                </>
                               )}
                             </Button>
                           </div>
