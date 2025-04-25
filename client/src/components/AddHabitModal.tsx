@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { InsertHabit } from "@shared/schema";
 import { XIcon, AlarmClock, CalendarIcon, Check } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface AddHabitModalProps {
   isOpen: boolean;
@@ -126,25 +127,48 @@ export function AddHabitModal({ isOpen, onClose, onAddHabit, isPending }: AddHab
               </div>
             </div>
             
-            {frequency === "Custom" && (
-              <div className="space-y-2 border border-border p-3 rounded-xl bg-secondary/30">
-                <Label className="text-sm font-medium">Which days?</Label>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {days.map((day) => (
-                    <Button
-                      key={day}
-                      type="button"
-                      size="sm"
-                      variant="outline"
-                      className={`rounded-lg ${customDays.includes(day) ? "bg-primary text-primary-foreground" : "bg-background"}`}
-                      onClick={() => toggleCustomDay(day)}
-                    >
-                      {day}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            )}
+            <AnimatePresence>
+              {frequency === "Custom" && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-2 border border-border p-3 rounded-xl bg-secondary/30 overflow-hidden"
+                >
+                  <Label className="text-sm font-medium">Which days?</Label>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {days.map((day, index) => (
+                      <motion.div
+                        key={day}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                      >
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className={`rounded-lg ${customDays.includes(day) ? "bg-primary text-primary-foreground" : "bg-background"}`}
+                          onClick={() => toggleCustomDay(day)}
+                        >
+                          {customDays.includes(day) && (
+                            <motion.span
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="mr-1"
+                            >
+                              <Check className="h-3 w-3" />
+                            </motion.span>
+                          )}
+                          {day}
+                        </Button>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
             
             <div className="space-y-2">
               <div className="flex items-center">
@@ -163,21 +187,36 @@ export function AddHabitModal({ isOpen, onClose, onAddHabit, isPending }: AddHab
           </div>
           
           <DialogFooter className="mt-6 flex space-x-2">
-            <Button 
-              variant="outline" 
-              type="button" 
-              onClick={handleClose}
-              className="flex-1 rounded-lg"
+            <motion.div className="flex-1" whileHover={{ scale: 0.98 }} whileTap={{ scale: 0.95 }}>
+              <Button 
+                variant="outline" 
+                type="button" 
+                onClick={handleClose}
+                className="w-full rounded-lg"
+              >
+                Cancel
+              </Button>
+            </motion.div>
+            <motion.div 
+              className="flex-1" 
+              whileHover={{ scale: 0.98 }} 
+              whileTap={{ scale: 0.95 }}
             >
-              Cancel
-            </Button>
-            <Button 
-              type="submit" 
-              disabled={!habitName.trim() || isPending}
-              className="flex-1 bg-primary text-primary-foreground rounded-lg"
-            >
-              {isPending ? "Adding..." : "Create Habit"}
-            </Button>
+              <Button 
+                type="submit" 
+                disabled={!habitName.trim() || isPending}
+                className="w-full bg-primary text-primary-foreground rounded-lg"
+              >
+                {isPending ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                    className="mr-2 h-4 w-4 border-2 border-t-transparent border-white rounded-full"
+                  />
+                ) : null}
+                {isPending ? "Adding..." : "Create Habit"}
+              </Button>
+            </motion.div>
           </DialogFooter>
         </form>
       </DialogContent>
