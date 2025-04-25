@@ -139,7 +139,7 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
           <div className="text-center py-8 dark:text-white">Loading habits...</div>
         ) : habits && habits.length > 0 ? (
           // Display habits in a 2-column grid layout
-          <div className="grid grid-cols-2 gap-4">
+          <div className="habit-grid">
             {habits.map(habit => (
               <HabitCard
                 key={habit.id}
