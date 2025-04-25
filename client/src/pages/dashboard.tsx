@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useHabits } from "@/hooks/use-habits";
 import { HabitCard } from "@/components/HabitCard";
 import { AddHabitModal } from "@/components/AddHabitModal";
-import { PlusIcon, TrophyIcon, TargetIcon, CalendarIcon } from "lucide-react";
+import { PlusIcon, TrophyIcon, TargetIcon, CalendarIcon, CheckIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { format } from "date-fns";
@@ -53,17 +53,19 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
   };
 
   return (
-    <div className="pb-20 max-w-3xl mx-auto">
+    <div className="pb-20 max-w-5xl mx-auto">
       {/* App Header */}
       <header className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold dark:text-white">Habit Tracker</h1>
-          <p className="text-sm text-muted-foreground dark:text-gray-300">Track your daily habits and build consistency</p>
+        <div className="flex items-center gap-2">
+          <div className="h-10 w-10 rounded-full bg-purple-700 flex items-center justify-center">
+            <CheckIcon className="h-5 w-5 text-white" />
+          </div>
+          <h1 className="text-2xl font-bold text-purple-300">Habit Tracker</h1>
         </div>
         <Button
           size="sm"
           onClick={() => setIsAddHabitModalOpen(true)}
-          className="bg-primary rounded-full gap-1"
+          className="bg-purple-600 hover:bg-purple-700 text-white rounded-full gap-1"
           data-add-habit-button
         >
           <PlusIcon className="h-4 w-4" />
@@ -72,28 +74,60 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
       </header>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
-        <Card className="p-4 rounded-xl bg-secondary/50 dark:bg-gray-800 border-none dark:border dark:border-gray-700">
-          <div className="flex flex-col items-center">
-            <TrophyIcon className="h-5 w-5 text-primary dark:text-purple-400 mb-1" />
-            <p className="text-xs text-muted-foreground dark:text-gray-300">Current Streak</p>
-            <p className="text-xl font-bold dark:text-white">{stats.currentStreak} days</p>
+      <div className="grid grid-cols-4 gap-4 mb-8">
+        <Card className="p-4 rounded-lg bg-slate-900 border border-gray-800">
+          <div className="flex items-center">
+            <div className="rounded-full bg-indigo-900/30 p-2 mr-3">
+              <div className="h-8 w-8 rounded-full bg-indigo-600/20 flex items-center justify-center">
+                <CheckIcon className="h-4 w-4 text-indigo-400" />
+              </div>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400">Habits</p>
+              <p className="text-xl font-bold text-white">{habits ? habits.length : 0}</p>
+            </div>
           </div>
         </Card>
         
-        <Card className="p-4 rounded-xl bg-secondary/50 dark:bg-gray-800 border-none dark:border dark:border-gray-700">
-          <div className="flex flex-col items-center">
-            <TargetIcon className="h-5 w-5 text-primary dark:text-purple-400 mb-1" />
-            <p className="text-xs text-muted-foreground dark:text-gray-300">Completion Rate</p>
-            <p className="text-xl font-bold dark:text-white">{stats.completionRate}%</p>
+        <Card className="p-4 rounded-lg bg-slate-900 border border-gray-800">
+          <div className="flex items-center">
+            <div className="rounded-full bg-green-900/30 p-2 mr-3">
+              <div className="h-8 w-8 rounded-full bg-green-600/20 flex items-center justify-center">
+                <TargetIcon className="h-4 w-4 text-green-400" />
+              </div>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400">Completion</p>
+              <p className="text-xl font-bold text-white">{stats.completionRate}%</p>
+            </div>
           </div>
         </Card>
         
-        <Card className="p-4 rounded-xl bg-secondary/50 dark:bg-gray-800 border-none dark:border dark:border-gray-700">
-          <div className="flex flex-col items-center">
-            <CalendarIcon className="h-5 w-5 text-primary dark:text-purple-400 mb-1" />
-            <p className="text-xs text-muted-foreground dark:text-gray-300">Total Habits</p>
-            <p className="text-xl font-bold dark:text-white">{habits ? habits.length : 0}</p>
+        <Card className="p-4 rounded-lg bg-slate-900 border border-gray-800">
+          <div className="flex items-center">
+            <div className="rounded-full bg-purple-900/30 p-2 mr-3">
+              <div className="h-8 w-8 rounded-full bg-purple-600/20 flex items-center justify-center">
+                <TrophyIcon className="h-4 w-4 text-purple-400" />
+              </div>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400">Best Streak</p>
+              <p className="text-xl font-bold text-white">{stats.longestStreak} days</p>
+            </div>
+          </div>
+        </Card>
+        
+        <Card className="p-4 rounded-lg bg-slate-900 border border-gray-800">
+          <div className="flex items-center">
+            <div className="rounded-full bg-amber-900/30 p-2 mr-3">
+              <div className="h-8 w-8 rounded-full bg-amber-600/20 flex items-center justify-center">
+                <CalendarIcon className="h-4 w-4 text-amber-400" />
+              </div>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400">Current Streak</p>
+              <p className="text-xl font-bold text-white">{stats.currentStreak} days</p>
+            </div>
           </div>
         </Card>
       </div>
@@ -121,16 +155,16 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
           </div>
         ) : (
           // Empty state
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center border border-neutral dark:border-gray-700 dark:text-white">
-            <div className="w-16 h-16 bg-secondary/50 dark:bg-gray-700 flex items-center justify-center rounded-full mx-auto mb-4">
-              <CalendarIcon className="h-8 w-8 text-primary dark:text-purple-400" />
+          <div className="bg-slate-900 rounded-lg p-8 text-center border border-gray-800">
+            <div className="w-16 h-16 bg-purple-900/30 flex items-center justify-center rounded-full mx-auto mb-4">
+              <CalendarIcon className="h-8 w-8 text-purple-400" />
             </div>
-            <h3 className="text-xl font-bold dark:text-white">No habits yet</h3>
-            <p className="mt-2 text-muted-foreground dark:text-gray-300">
+            <h3 className="text-xl font-bold text-white">No habits yet</h3>
+            <p className="mt-2 text-gray-400">
               Start adding habits to track your progress
             </p>
             <Button
-              className="mt-6 bg-primary rounded-full text-white"
+              className="mt-6 bg-purple-600 hover:bg-purple-700 rounded-full text-white"
               onClick={() => setIsAddHabitModalOpen(true)}
               data-add-habit-button
             >
