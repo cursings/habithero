@@ -51,10 +51,11 @@
 /* Custom styles */
 .bg-pattern {
   background-color: #111827; /* Dark background base color */
-  background-image: 
-    linear-gradient(rgba(128, 90, 213, 0.015) 1px, transparent 1px),
-    linear-gradient(to right, rgba(128, 90, 213, 0.015) 1px, transparent 1px),
-    linear-gradient(to bottom, #111827, #171a29);
-  background-size: 40px 40px, 40px 40px, 100% 100%;
+  background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cfilter id='topo' x='0%25' y='0%25' width='100%25' height='100%25'%3E%3CfeTurbulence baseFrequency='0.005' numOctaves='2' result='noise1' seed='10'/%3E%3CfeTurbulence baseFrequency='0.007' numOctaves='3' result='noise2' seed='20'/%3E%3CfeBlend in='noise1' in2='noise2' mode='multiply' result='blendedNoise'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0' result='contrasted'/%3E%3CfeConvolveMatrix order='3,3' kernelMatrix='1 2 1 2 0 2 1 2 1' divisor='8' in='contrasted' result='softened'/%3E%3CfeBlend in='softened' in2='contrasted' mode='normal' result='final'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='100%25' height='100%25' filter='url(%23topo)'/%3E%3Cg stroke-width='0.25' stroke-opacity='0.07'%3E%3Cpath stroke='%23ffffff' fill='none' d='M0,160 C100,120 180,100 250,160 C300,200 400,220 500,170 C600,120 700,140 800,180 C900,220 950,200 1000,150'/%3E%3Cpath stroke='%23ffffff' fill='none' d='M0,260 C100,220 180,200 250,260 C300,300 400,320 500,270 C600,220 700,240 800,280 C900,320 950,300 1000,250'/%3E%3Cpath stroke='%23ffffff' fill='none' d='M0,60 C100,20 180,10 250,70 C300,110 400,130 500,80 C600,30 700,50 800,90 C900,120 950,110 1000,60'/%3E%3Cpath stroke='%23ffffff' fill='none' d='M0,360 C70,330 150,360 250,330 C350,300 450,290 550,320 C650,350 750,340 850,310 C950,280 975,300 1000,330'/%3E%3Cpath stroke='%23ffffff' fill='none' d='M0,460 C70,430 150,460 250,430 C350,400 450,390 550,420 C650,450 750,440 850,410 C950,380 975,400 1000,430'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(to bottom, #111827, #151b35);
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center center;
+  background-blend-mode: overlay;
 }
 
