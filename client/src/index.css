@@ -49,4 +49,12 @@
 }
 
 /* Custom styles */
+.bg-pattern {
+  background-color: #111827; /* Dark background base color */
+  background-image: 
+    linear-gradient(rgba(128, 90, 213, 0.015) 1px, transparent 1px),
+    linear-gradient(to right, rgba(128, 90, 213, 0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, #111827, #171a29);
+  background-size: 40px 40px, 40px 40px, 100% 100%;
+}
 

@@ -119,7 +119,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 transition-all duration-500 relative">
+    <div className="min-h-screen bg-pattern transition-all duration-500 relative">
         {/* Centered Add Habit Button */}
         <div className={`fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 transition-opacity duration-300 ${habits && habits.length > 0 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
           <Button
