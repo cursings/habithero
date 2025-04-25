@@ -122,11 +122,20 @@ export function useHabits() {
 
   const isHabitCompletedToday = (habitId: number): boolean => {
     const today = format(new Date(), "yyyy-MM-dd");
-    return completions.some(
-      (completion) => 
-        completion.habitId === habitId && 
-        completion.date === today
+    
+    // First check if we have any completions data
+    if (!completions || completions.length === 0) {
+      return false;
+    }
+    
+    // Check if this habit was completed today
+    const completed = completions.some(completion => 
+      completion.habitId === habitId && 
+      completion.date === today
     );
+    
+    console.log(`Checking if habit ${habitId} is completed today: ${completed}`);
+    return completed;
   };
 
   const getHabitCurrentStreak = (habitId: number): number => {

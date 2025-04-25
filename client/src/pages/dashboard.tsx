@@ -32,13 +32,20 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
 
   // Handler for toggling habit completion
   const handleToggleCompletion = (habitId: number) => {
+    // Get today's date in the format expected by the API
     const today = format(new Date(), "yyyy-MM-dd");
-    const completed = !isHabitCompletedToday(habitId);
     
+    // Check if the habit is currently completed today
+    const currentlyCompleted = isHabitCompletedToday(habitId);
+    
+    // Toggle to the opposite state
+    console.log(`Toggling habit ${habitId} from ${currentlyCompleted ? "completed" : "not completed"} to ${!currentlyCompleted ? "completed" : "not completed"}`);
+    
+    // Call the toggle function with the new state
     toggleCompletion({
       habitId,
       date: today,
-      completed
+      completed: !currentlyCompleted
     });
   };
 

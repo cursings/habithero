@@ -38,12 +38,13 @@ export function HabitCard({
         <button
           onClick={onToggleCompletion}
           disabled={isPending}
-          className={`rounded-full w-10 h-10 flex items-center justify-center transition-all ${
+          className={`rounded-full w-10 h-10 flex items-center justify-center transition-all cursor-pointer hover:opacity-80 active:scale-95 ${
             isCompletedToday 
               ? "bg-primary text-white" 
               : "bg-secondary text-primary dark:text-white dark:bg-gray-700"
           } ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
           aria-label={isCompletedToday ? "Mark as not completed" : "Mark as completed"}
+          type="button"
         >
           {isCompletedToday ? (
             <CheckIcon className="h-4 w-4" />
