@@ -106,16 +106,14 @@ function App() {
   
   // Handler for deleting a habit with optimistic updates
   const handleDeleteHabit = (habitId: number) => {
-    if (window.confirm("Are you sure you want to delete this habit?")) {
-      // Optimistically update the UI before the server response
-      queryClient.setQueryData<Habit[]>(['/api/habits'], (oldHabits = []) => {
-        console.log("Deleting habit", habitId, "from cache");
-        return oldHabits.filter(h => h.id !== habitId);
-      });
-      
-      // Perform the actual deletion
-      deleteHabit(habitId);
-    }
+    // Optimistically update the UI before the server response
+    queryClient.setQueryData<Habit[]>(['/api/habits'], (oldHabits = []) => {
+      console.log("Deleting habit", habitId, "from cache");
+      return oldHabits.filter(h => h.id !== habitId);
+    });
+    
+    // Perform the actual deletion
+    deleteHabit(habitId);
   };
 
   return (
