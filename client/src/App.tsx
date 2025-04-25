@@ -6,7 +6,8 @@ import {
   CalendarCheck, 
   BarChart2, 
   Trash2,
-  CheckIcon
+  CheckIcon,
+  FrownIcon
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
@@ -237,7 +238,7 @@ function App() {
                     className="bg-gray-800 rounded-xl p-8 text-center border border-gray-700"
                   >
                     <div className="w-16 h-16 bg-gray-700 flex items-center justify-center rounded-full mx-auto mb-4">
-                      <CheckCircle2 className="h-8 w-8 text-purple-400" />
+                      <FrownIcon className="h-8 w-8 text-purple-400" />
                     </div>
                     <h3 className="text-xl font-bold text-white">No habits yet</h3>
                     <p className="mt-2 text-gray-400">
