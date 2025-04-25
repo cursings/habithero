@@ -53,7 +53,7 @@ export function HabitCard({
             disabled={isPending}
             variant="ghost"
             size="icon"
-            className={`h-8 w-8 rounded-full ${isCompletedToday ? 'bg-gradient-to-br from-purple-500 to-fuchsia-600 hover:from-purple-600 hover:to-fuchsia-700 border-none shadow-inner shadow-purple-900/50' : 'bg-gray-800 border border-gray-700'}`}
+            className={`h-8 w-8 rounded-full ${isCompletedToday ? 'bg-gradient-to-br from-purple-500 to-fuchsia-600 hover:from-purple-600 hover:to-fuchsia-700 border-none shadow-inner shadow-purple-900/50' : 'bg-slate-700 border border-purple-600 hover:bg-slate-600'}`}
             aria-label={isCompletedToday ? "Mark as not completed" : "Mark as completed"}
           >
             {isCompletedToday ? (
