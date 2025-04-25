@@ -10,11 +10,11 @@ export function useHabits() {
   const { toast } = useToast();
   const [isAddHabitModalOpen, setIsAddHabitModalOpen] = useState(false);
 
-  // Set a minimal stale time and very fast refetch interval for near-instant updates
+  // Set a minimal stale time and ultra-fast refetch interval for immediate updates
   const { data: habits = [], isLoading: isLoadingHabits } = useQuery<Habit[]>({
     queryKey: ["/api/habits"],
     staleTime: 0,
-    refetchInterval: 500, // Very fast refresh - 500ms
+    refetchInterval: 50, // Ultra-fast refresh - 50ms for instant response
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
@@ -28,7 +28,7 @@ export function useHabits() {
   const { data: completions = [], isLoading: isLoadingCompletions } = useQuery<HabitCompletion[]>({
     queryKey: ["/api/completions"],
     staleTime: 0,
-    refetchInterval: 500, // Very fast refresh - 500ms
+    refetchInterval: 50, // Ultra-fast refresh - 50ms for instant response
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
@@ -167,7 +167,7 @@ export function useHabits() {
   }, isLoading: isLoadingStats } = useQuery<HabitStats>({
     queryKey: ["/api/stats"],
     staleTime: 0,
-    refetchInterval: 500, // Very fast refresh - 500ms
+    refetchInterval: 50, // Ultra-fast refresh - 50ms for instant response
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
