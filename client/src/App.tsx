@@ -5,7 +5,8 @@ import {
   Trophy, 
   CalendarCheck, 
   BarChart2, 
-  Trash2 
+  Trash2,
+  CheckIcon
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
@@ -205,105 +206,96 @@ function App() {
               </span>
             </h2>
             
-            <div className="space-y-4">
+            <div>
               <AnimatePresence>
                 {isLoadingHabits ? (
-                  Array(3).fill(0).map((_, i) => (
-                    <div key={i} className="bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-700 animate-pulse">
-                      <div className="flex justify-between">
-                        <div className="w-1/3 h-6 bg-gray-700 rounded"></div>
-                        <div className="w-10 h-10 bg-gray-700 rounded-full"></div>
+                  <div className="habit-grid">
+                    {Array(4).fill(0).map((_, i) => (
+                      <div key={i} className="bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-700 animate-pulse">
+                        <div className="flex justify-between">
+                          <div className="w-1/3 h-6 bg-gray-700 rounded"></div>
+                          <div className="w-10 h-10 bg-gray-700 rounded-full"></div>
+                        </div>
+                        <div className="mt-4 w-full h-2 bg-gray-700 rounded-full"></div>
+                        <div className="mt-3 flex justify-between">
+                          <div className="w-24 h-6 bg-gray-700 rounded-full"></div>
+                          <div className="w-32 h-6 bg-gray-700 rounded-full"></div>
+                        </div>
                       </div>
-                      <div className="mt-4 w-full h-2 bg-gray-700 rounded-full"></div>
-                      <div className="mt-3 flex justify-between">
-                        <div className="w-24 h-6 bg-gray-700 rounded-full"></div>
-                        <div className="w-32 h-6 bg-gray-700 rounded-full"></div>
-                      </div>
-                    </div>
-                  ))
+                    ))}
+                  </div>
                 ) : habits && habits.length > 0 ? (
-                  habits.map(habit => (
-                    <motion.div
-                      key={habit.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, x: -100 }}
-                      transition={{ duration: 0.2 }}
-                      layout
-                    >
-                      <div className="bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-700 transition-all hover:shadow-md">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <h3 className="font-bold text-lg text-white group-hover:text-primary">{habit.name}</h3>
-                            <p className="text-sm text-gray-400">{habit.frequency}</p>
+                  <div className="habit-grid">
+                    {habits.map(habit => (
+                      <motion.div
+                        key={habit.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, x: -100 }}
+                        transition={{ duration: 0.2 }}
+                        layout
+                      >
+                        <div className="bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-700 transition-all hover:shadow-md">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <h3 className="font-bold text-lg text-white group-hover:text-primary">{habit.name}</h3>
+                              <p className="text-sm text-gray-400">{habit.frequency}</p>
+                            </div>
+                            <div className="flex gap-2 items-center">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-gray-500 hover:text-red-400 h-8 w-8 transition-colors"
+                                onClick={() => handleDeleteHabit(habit.id)}
+                                disabled={isPendingDeleteHabit}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
                           </div>
-                          <div className="flex gap-2 items-center">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="text-gray-500 hover:text-red-400 h-8 w-8 transition-colors"
-                              onClick={() => handleDeleteHabit(habit.id)}
-                              disabled={isPendingDeleteHabit}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                          
+                          <div className="mt-4">
+                            <div className="flex justify-between items-center mb-1">
+                              <span className="text-xs text-gray-400">Weekly progress</span>
+                              <span className="text-xs font-medium text-gray-300">{getHabitWeeklyProgress(habit.id) || 0}%</span>
+                            </div>
+                            <div className="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                              <div 
+                                className="h-1.5 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full transition-all duration-500 ease-out"
+                                style={{ width: `${getHabitWeeklyProgress(habit.id) || 0}%` }}
+                              />
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center justify-between mt-4">
+                            <div className="text-xs text-gray-400">
+                              {getHabitCurrentStreak(habit.id) > 0 ? (
+                                <span>{getHabitCurrentStreak(habit.id)} day streak</span>
+                              ) : (
+                                <span>0 day streak</span>
+                              )}
+                            </div>
+                            
                             <Button
                               onClick={() => handleToggleCompletion(habit.id)}
                               disabled={isPendingToggleCompletion}
-                              variant={isHabitCompletedToday(habit.id) ? "default" : "outline"}
-                              size="icon"
-                              aria-label={isHabitCompletedToday(habit.id) ? "Unmark as completed" : "Mark as completed"}
-                              title={isHabitCompletedToday(habit.id) ? "Click to unmark as completed" : "Click to mark as completed"}
-                              className={`rounded-full h-10 w-10 transition-all duration-300 relative group ${
-                                isHabitCompletedToday(habit.id) 
-                                  ? "bg-green-500 hover:bg-red-500 text-white border-0" 
-                                  : "border-2 border-gray-600 hover:border-purple-500 border-dashed"
-                              }`}
+                              size="sm"
+                              className={isHabitCompletedToday(habit.id) ? 
+                                "bg-purple-600 hover:bg-purple-700 text-white" : 
+                                "bg-transparent border border-purple-600 text-purple-500 hover:bg-purple-500/10"
+                              }
                             >
                               {isHabitCompletedToday(habit.id) ? (
-                                <>
-                                  <CheckCircle2 className="h-5 w-5 group-hover:opacity-0 transition-opacity absolute inset-0 m-auto" />
-                                  <span className="h-5 w-5 flex items-center justify-center text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity absolute inset-0 m-auto">×</span>
-                                  <span className="sr-only">Unmark habit as completed</span>
-                                </>
+                                <><CheckIcon className="h-3.5 w-3.5 mr-1.5" /> Complete</>
                               ) : (
-                                <>
-                                  <div className="h-5 w-5 rounded-full" />
-                                  <span className="sr-only">Mark habit as completed</span>
-                                </>
+                                "Complete"
                               )}
                             </Button>
                           </div>
                         </div>
-                        
-                        <div className="mt-4">
-                          <div className="flex justify-between items-center mb-1">
-                            <span className="text-xs text-gray-400">Weekly progress</span>
-                            <span className="text-xs font-medium text-gray-300">{getHabitWeeklyProgress(habit.id) || 0}%</span>
-                          </div>
-                          <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
-                            <div 
-                              className="h-2 bg-purple-500 rounded-full transition-all duration-500 ease-out"
-                              style={{ width: `${getHabitWeeklyProgress(habit.id) || 0}%` }}
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="mt-3 flex justify-between items-center flex-wrap gap-2">
-                          {getHabitCurrentStreak(habit.id) > 0 && (
-                            <div className="flex items-center text-xs px-3 py-1 bg-orange-900/30 text-orange-300 rounded-full">
-                              <Trophy className="h-3 w-3 mr-1" />
-                              {getHabitCurrentStreak(habit.id)} day streak
-                            </div>
-                          )}
-                          
-                          <div className="text-xs text-gray-400 ml-auto">
-                            Last completed: {getLastCompletedText(habit.id)}
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))
+                      </motion.div>
+                    ))}
+                  </div>
                 ) : (
                   <motion.div
                     initial={{ opacity: 0 }}
