@@ -41,13 +41,13 @@ export function HabitCard({
           disabled={isPending}
           variant={isCompletedToday ? "default" : "secondary"}
           size="icon"
-          className="w-10 h-10 rounded-full"
+          className={`w-10 h-10 rounded-full ${isCompletedToday ? 'bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700' : 'bg-secondary'}`}
           aria-label={isCompletedToday ? "Mark as not completed" : "Mark as completed"}
         >
           {isCompletedToday ? (
-            <CheckIcon className="h-4 w-4" />
+            <CheckIcon className="h-4 w-4 text-white" />
           ) : (
-            <div className="w-4 h-4 border-2 border-primary dark:border-white rounded-full" />
+            <div className="w-4 h-4 border-2 border-primary dark:border-fuchsia-400 rounded-full" />
           )}
         </Button>
       </div>
@@ -59,7 +59,7 @@ export function HabitCard({
         </div>
         <div className="w-full h-2 bg-secondary rounded-full overflow-hidden">
           <div 
-            className="h-2 bg-primary rounded-full transition-all duration-500 ease-out"
+            className="h-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full transition-all duration-500 ease-out"
             style={{ width: `${weeklyProgress || 0}%` }}
           />
         </div>

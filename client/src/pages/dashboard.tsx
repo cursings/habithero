@@ -99,24 +99,26 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
       </div>
 
       {/* Habits List */}
-      <div className="space-y-4">
+      <div>
         {isLoadingHabits ? (
           // Loading state
           <div className="text-center py-8 dark:text-white">Loading habits...</div>
         ) : habits && habits.length > 0 ? (
-          // Map through habits
-          habits.map(habit => (
-            <HabitCard
-              key={habit.id}
-              habit={habit}
-              isCompletedToday={isHabitCompletedToday(habit.id)}
-              streak={getHabitCurrentStreak(habit.id)}
-              weeklyProgress={getHabitWeeklyProgress(habit.id)}
-              lastCompleted={getLastCompletedText(habit.id)}
-              onToggleCompletion={() => handleToggleCompletion(habit.id)}
-              isPending={isPendingToggleCompletion}
-            />
-          ))
+          // Display habits in a 2-column grid layout
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {habits.map(habit => (
+              <HabitCard
+                key={habit.id}
+                habit={habit}
+                isCompletedToday={isHabitCompletedToday(habit.id)}
+                streak={getHabitCurrentStreak(habit.id)}
+                weeklyProgress={getHabitWeeklyProgress(habit.id)}
+                lastCompleted={getLastCompletedText(habit.id)}
+                onToggleCompletion={() => handleToggleCompletion(habit.id)}
+                isPending={isPendingToggleCompletion}
+              />
+            ))}
+          </div>
         ) : (
           // Empty state
           <div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center border border-neutral dark:border-gray-700 dark:text-white">
