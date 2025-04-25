@@ -119,7 +119,19 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 transition-all duration-500">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 transition-all duration-500 relative">
+        {/* Centered Add Habit Button */}
+        <div className={`fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 transition-opacity duration-300 ${habits && habits.length > 0 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+          <Button
+            onClick={() => setIsAddHabitModalOpen(true)}
+            className="gap-2 rounded-full bg-purple-500 hover:bg-purple-600 text-white shadow-xl hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-300 px-10 py-8 text-lg font-medium"
+            size="lg"
+          >
+            <PlusIcon className="h-6 w-6 mr-1" />
+            Add Habit
+          </Button>
+        </div>
+        
         {/* Main Content */}
         <main className="max-w-4xl mx-auto px-4 py-8 pb-20">
           {/* Habits List */}
@@ -215,16 +227,6 @@ function App() {
                       </motion.div>
                     ))}
                     
-                    {/* Add Habit Button below existing habits - centered */}
-                    <div className="flex justify-center mt-10 mb-6">
-                      <Button
-                        onClick={() => setIsAddHabitModalOpen(true)}
-                        className="gap-2 rounded-full bg-purple-500 hover:bg-purple-600 text-white shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 px-6"
-                      >
-                        <PlusIcon className="h-4 w-4" />
-                        Add Habit
-                      </Button>
-                    </div>
                   </div>
                 ) : (
                   <motion.div
