@@ -64,7 +64,7 @@ export function AddHabitModal({ isOpen, onClose, onAddHabit, isPending }: AddHab
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md rounded-xl p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-md rounded-xl p-0 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
         <div className="bg-primary text-primary-foreground p-4">
           <DialogHeader>
             <div className="flex justify-between items-center">
@@ -79,21 +79,21 @@ export function AddHabitModal({ isOpen, onClose, onAddHabit, isPending }: AddHab
         <form onSubmit={handleSubmit} className="p-4">
           <div className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="habit-name" className="text-sm font-medium">What habit do you want to track?</Label>
+              <Label htmlFor="habit-name" className="text-sm font-medium dark:text-white">What habit do you want to track?</Label>
               <Input
                 id="habit-name"
                 placeholder="e.g., Morning meditation"
                 value={habitName}
                 onChange={(e) => setHabitName(e.target.value)}
                 required
-                className="rounded-lg border-border focus-visible:ring-primary"
+                className="rounded-lg border-border dark:border-gray-600 focus-visible:ring-primary"
               />
             </div>
             
             <div className="space-y-3">
               <div className="flex items-center">
-                <CalendarIcon className="h-5 w-5 text-primary mr-2" />
-                <Label className="text-sm font-medium">How often?</Label>
+                <CalendarIcon className="h-5 w-5 text-primary dark:text-purple-400 mr-2" />
+                <Label className="text-sm font-medium dark:text-white">How often?</Label>
               </div>
               
               <div className="grid grid-cols-3 gap-2">
