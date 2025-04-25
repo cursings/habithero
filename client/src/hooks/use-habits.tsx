@@ -104,6 +104,35 @@ export function useHabits() {
       });
     },
   });
+  
+  const deleteHabitMutation = useMutation({
+    mutationFn: async (habitId: number) => {
+      return await apiRequest("DELETE", `/api/habits/${habitId}`);
+    },
+    onSuccess: (_, habitId) => {
+      // Optimistically update the UI by removing the habit from cache
+      queryClient.setQueryData<Habit[]>(["/api/habits"], (oldData = []) => {
+        return oldData.filter(habit => habit.id !== habitId);
+      });
+      
+      // Also invalidate and refetch all relevant queries
+      queryClient.invalidateQueries({ queryKey: ["/api/habits"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/completions"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+      
+      toast({
+        title: "Success",
+        description: "Habit deleted successfully",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: `Failed to delete habit: ${error.message}`,
+        variant: "destructive",
+      });
+    },
+  });
 
   const { data: stats = {
     completionRate: 0, 
@@ -225,6 +254,8 @@ export function useHabits() {
     isPendingAddHabit: addHabitMutation.isPending,
     toggleCompletion: toggleCompletionMutation.mutate,
     isPendingToggleCompletion: toggleCompletionMutation.isPending,
+    deleteHabit: deleteHabitMutation.mutate,
+    isPendingDeleteHabit: deleteHabitMutation.isPending,
     isHabitCompletedToday,
     getHabitCurrentStreak,
     getHabitWeeklyProgress,
