@@ -11,7 +11,13 @@ export function useHabits() {
   const [isAddHabitModalOpen, setIsAddHabitModalOpen] = useState(false);
 
   const { data: habits = [], isLoading: isLoadingHabits } = useQuery<Habit[]>({
-    queryKey: ["/api/habits"]
+    queryKey: ["/api/habits"],
+    // Increase stale time to avoid unnecessary refetches
+    staleTime: 0,
+    // Reduce refetch interval to ensure fresh data
+    refetchInterval: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true
   });
 
   // Log habits whenever they change
@@ -20,7 +26,11 @@ export function useHabits() {
   }, [habits]);
 
   const { data: completions = [], isLoading: isLoadingCompletions } = useQuery<HabitCompletion[]>({
-    queryKey: ["/api/completions"]
+    queryKey: ["/api/completions"],
+    staleTime: 0,
+    refetchInterval: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true
   });
 
   const addHabitMutation = useMutation({
@@ -103,6 +113,10 @@ export function useHabits() {
     totalCompletionsChange: 0
   }, isLoading: isLoadingStats } = useQuery<HabitStats>({
     queryKey: ["/api/stats"],
+    staleTime: 0,
+    refetchInterval: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true
   });
 
   const isHabitCompletedToday = (habitId: number): boolean => {

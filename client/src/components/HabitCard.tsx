@@ -54,8 +54,9 @@ export function HabitCard({
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.5, opacity: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="flex items-center justify-center w-4 h-4"
               >
-                <CheckIcon className="h-5 w-5" />
+                <CheckIcon className="h-4 w-4" />
               </motion.div>
             ) : (
               <motion.div
@@ -64,7 +65,7 @@ export function HabitCard({
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.5, opacity: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="w-5 h-5 border-2 border-primary rounded-full"
+                className="w-4 h-4 border-2 border-primary dark:border-white rounded-full"
               />
             )}
           </AnimatePresence>
