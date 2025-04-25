@@ -133,11 +133,10 @@ function App() {
         <main className="max-w-4xl mx-auto px-4 py-8 pb-20">
           {/* Habits List */}
           <section>
-            
             <div>
-              <AnimatePresence>
+              <AnimatePresence mode="popLayout">
                 {isLoadingHabits ? (
-                  <div className="habit-grid">
+                  <div className="habit-grid" key="loading">
                     {Array(4).fill(0).map((_, i) => (
                       <div key={i} className="bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-700 animate-pulse">
                         <div className="flex justify-between">
@@ -153,14 +152,20 @@ function App() {
                     ))}
                   </div>
                 ) : habits && habits.length > 0 ? (
-                  <div className="habit-grid">
+                  <div className="habit-grid" key="habits-list">
                     {habits.map(habit => (
                       <motion.div
                         key={habit.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, x: -100 }}
-                        transition={{ duration: 0.2 }}
+                        initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ 
+                          opacity: 0, 
+                          scale: 0.8, 
+                          x: -30,
+                          rotate: -5,
+                          transition: { duration: 0.3, ease: "easeInOut" }
+                        }}
+                        transition={{ duration: 0.3 }}
                         layout
                       >
                         <div className="bg-gray-800 rounded-xl p-5 shadow border border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/10 hover:border-gray-600">
@@ -223,10 +228,10 @@ function App() {
                         </div>
                       </motion.div>
                     ))}
-                    
                   </div>
                 ) : (
                   <motion.div
+                    key="no-habits"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     className="bg-gray-800 rounded-xl p-8 text-center border border-gray-700"
