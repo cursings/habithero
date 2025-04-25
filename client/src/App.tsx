@@ -259,10 +259,10 @@ function App() {
                               <span className="text-xs text-gray-400">Weekly progress</span>
                               <span className="text-xs font-medium text-gray-300">{getHabitWeeklyProgress(habit.id) || 0}%</span>
                             </div>
-                            <div className="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                            <div className="w-full h-1.5 bg-gray-800/60 rounded-full overflow-hidden border border-gray-700 shadow-inner">
                               <div 
-                                className="h-1.5 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full transition-all duration-500 ease-out"
-                                style={{ width: `${getHabitWeeklyProgress(habit.id) || 0}%` }}
+                                className="h-1.5 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full transition-all duration-500 ease-out shadow-sm min-w-[4px]"
+                                style={{ width: `${Math.max(getHabitWeeklyProgress(habit.id) || 0, 1)}%` }}
                               />
                             </div>
                           </div>
@@ -281,12 +281,12 @@ function App() {
                               disabled={isPendingToggleCompletion}
                               size="sm"
                               className={isHabitCompletedToday(habit.id) ? 
-                                "bg-purple-600 hover:bg-purple-700 text-white" : 
-                                "bg-transparent border border-purple-600 text-purple-500 hover:bg-purple-500/10"
+                                "bg-gray-700 hover:bg-gray-600 text-gray-300 border border-gray-600 transition-all duration-200" : 
+                                "bg-purple-600 hover:bg-purple-700 text-white transition-all duration-200"
                               }
                             >
                               {isHabitCompletedToday(habit.id) ? (
-                                <><CheckIcon className="h-3.5 w-3.5 mr-1.5" /> Complete</>
+                                <><CheckIcon className="h-3.5 w-3.5 mr-1.5 text-gray-300" /> Completed</>
                               ) : (
                                 "Complete"
                               )}
